@@ -50,32 +50,6 @@ export default function EtcSalesCreate() {
         reqsumInput.onChange(e);
     };
 
-    // 업체 선택 시 업체 정보 자동 입력
-    useEffect(() => {
-        const fetchCompanyInfo = async () => {
-            if (!comCode) return;
-
-            try {
-                const response = await fetch(`/api/shop/${comCode}`);
-                const data = await response.json();
-
-                if (data.result && data.data && data.data.comInfo) {
-                    const companyInfo = data.data.comInfo;
-                    comNameInput.setValue(companyInfo.comName || "");
-                    areaInput.setValue(companyInfo.areaName || area);
-                    telInput.setValue(companyInfo.tel || "");
-                    hpInput.setValue(companyInfo.hp || "");
-                    receipterInput.setValue(companyInfo.boss || "");
-                    addrInput.setValue(companyInfo.address || "");
-                }
-            } catch (error) {
-                console.error("Error fetching company info:", error);
-            }
-        };
-
-        fetchCompanyInfo();
-    }, [comCode]);
-
     const handleSave = () => {
         if (!window.confirm("저장하시겠습니까?")) return;
 
@@ -121,6 +95,33 @@ export default function EtcSalesCreate() {
         router.push("/deptWorks/etcSales/List");
     };
 
+    // useEffect - 업체 선택 시 업체 정보 자동 입력
+    useEffect(() => {
+        const fetchCompanyInfo = async () => {
+            if (!comCode) return;
+
+            try {
+                const response = await fetch(`/api/shop/${comCode}`);
+                const data = await response.json();
+
+                if (data.result && data.data && data.data.comInfo) {
+                    const companyInfo = data.data.comInfo;
+                    comNameInput.setValue(companyInfo.comName || "");
+                    areaInput.setValue(companyInfo.areaName || area);
+                    telInput.setValue(companyInfo.tel || "");
+                    hpInput.setValue(companyInfo.hp || "");
+                    receipterInput.setValue(companyInfo.boss || "");
+                    addrInput.setValue(companyInfo.address || "");
+                }
+            } catch (error) {
+                console.error("Error fetching company info:", error);
+            }
+        };
+
+        fetchCompanyInfo();
+    }, [comCode]);
+
+    // useEffect - userInfo 처리
     useEffect(() => {
         if (typeof window !== "undefined") {
             const tokenItem = localStorage.getItem("atKey");

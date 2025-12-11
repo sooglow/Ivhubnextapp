@@ -184,7 +184,7 @@ export default function CreateNewShopList({ setComCode, setArea }: CreateNewShop
                                                 onClick={() => {
                                                     listItemClick(shopList.comCode, shopList.area);
                                                 }}
-                                                className="hover:bg-slate-100 cursor-pointer transition-all border-t"
+                                                className="hover:bg-slate-100 cursor-pointer transition-all border-t border-[#E1E1E1]"
                                             >
                                                 <td className="p-4 text-left">
                                                     {shopList.area ?? ""}

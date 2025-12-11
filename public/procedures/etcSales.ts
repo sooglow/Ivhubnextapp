@@ -133,25 +133,29 @@ export class EtcSalesProcedures extends BaseProcedures {
 
         const sql = await import("mssql");
 
+        const cleanValue = (val: any) => (val === "" || val === null || val === undefined) ? null : val;
+
+        console.log("sendDay value:", sendDay, "type:", typeof sendDay, "cleaned:", cleanValue(sendDay));
+
         return this.executeProc<any>("USP_CORE_ETC_SALES_C", [
-            { name: "etcsales_serial", type: sql.default.VarChar(12), value: etcSalesSerial },
-            { name: "comname", type: sql.default.VarChar(50), value: comName },
-            { name: "comcode", type: sql.default.VarChar(10), value: comCode },
-            { name: "recman", type: sql.default.VarChar(10), value: recMan },
-            { name: "tel", type: sql.default.VarChar(50), value: tel },
-            { name: "hp", type: sql.default.VarChar(50), value: hp },
-            { name: "area", type: sql.default.VarChar(50), value: area },
-            { name: "addr", type: sql.default.VarChar(100), value: addr },
-            { name: "receipter", type: sql.default.VarChar(50), value: receipter },
-            { name: "kind", type: sql.default.VarChar(2), value: kind },
-            { name: "skind", type: sql.default.VarChar(2), value: skind },
-            { name: "qty", type: sql.default.Int, value: qty },
-            { name: "reqsum", type: sql.default.Int, value: reqSum },
-            { name: "intotal", type: sql.default.Int, value: inTotal },
-            { name: "misu", type: sql.default.Int, value: misu },
-            { name: "descr", type: sql.default.VarChar(5000), value: descr },
-            { name: "state", type: sql.default.VarChar(1), value: state },
-            { name: "sendday", type: sql.default.VarChar(10), value: sendDay },
+            { name: "etcsales_serial", type: sql.default.VarChar(10), value: cleanValue(etcSalesSerial) },
+            { name: "recman", type: sql.default.VarChar(20), value: cleanValue(recMan) },
+            { name: "comcode", type: sql.default.VarChar(10), value: cleanValue(comCode) },
+            { name: "comname", type: sql.default.VarChar(60), value: cleanValue(comName) },
+            { name: "tel", type: sql.default.VarChar(15), value: cleanValue(tel) },
+            { name: "hp", type: sql.default.VarChar(15), value: cleanValue(hp) },
+            { name: "addr", type: sql.default.VarChar(80), value: cleanValue(addr) },
+            { name: "area", type: sql.default.VarChar(20), value: cleanValue(area) },
+            { name: "kind", type: sql.default.VarChar(20), value: cleanValue(kind) },
+            { name: "skind", type: sql.default.VarChar(50), value: cleanValue(skind) },
+            { name: "qty", type: sql.default.Int, value: qty || null },
+            { name: "reqsum", type: sql.default.Int, value: reqSum || null },
+            { name: "descr", type: sql.default.VarChar(2000), value: cleanValue(descr) },
+            { name: "state", type: sql.default.VarChar(1), value: cleanValue(state) },
+            { name: "intotal", type: sql.default.Int, value: inTotal || null },
+            { name: "misu", type: sql.default.Int, value: misu || null },
+            { name: "sendday", type: sql.default.NVarChar(10), value: cleanValue(sendDay) },
+            { name: "receipter", type: sql.default.VarChar(20), value: cleanValue(receipter) },
         ]);
     }
 
