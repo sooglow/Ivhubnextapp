@@ -43,3 +43,5 @@ export const ETCSALES = [
 ];
 
 export const ETCSALESMETHOD = ["택배", "직접", "고속버스", "우편"];
+
+export const MAINTENANCESRESULT = ["접수", "처리중", "완료", "보류", "취소"];

@@ -272,7 +272,7 @@ export default function EtcSalesList() {
                     <div className="pt-4 pl-4 md:pt-5 md:pl-4">
                         <button
                             onClick={handleCreate}
-                            className="w-[115px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] md:w-[115px] md:h-10"
+                            className="w-[115px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] md:w-[115px] md:h-10 cursor-pointer"
                         >
                             작성하기
                         </button>

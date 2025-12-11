@@ -604,7 +604,7 @@ export default function EtcSalesEdit({ params }: Props) {
                         <div>
                             <button
                                 onClick={handleCancel}
-                                className="w-[110px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[110px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                             >
                                 취소
                             </button>
@@ -613,22 +613,22 @@ export default function EtcSalesEdit({ params }: Props) {
                             <button
                                 onClick={handleDelete}
                                 disabled={deleteMutation.isPending}
-                                className={`w-[110px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none ${
+                                className={`w-[110px] px-4 py-2 text-white bg-[#77829B] border shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer ${
                                     userInfo.userId === post.recMan || userInfo.userPower === "0"
                                         ? ""
                                         : "hidden"
                                 }`}
                             >
-                                {deleteMutation.isPending ? "삭제중..." : "삭제"}
+                                삭제
                             </button>
                         </div>
                         <div className="pl-2">
                             <button
                                 onClick={handleSave}
                                 disabled={updateMutation.isPending}
-                                className="w-[110px] bg-[#77829B] hover:bg-slate-600 text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[110px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                             >
-                                {updateMutation.isPending ? "저장중..." : "저장"}
+                                저장
                             </button>
                         </div>
                     </div>
