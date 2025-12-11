@@ -1,0 +1,20 @@
+/* components/Nav.module.css */
+.submenuEnter {
+    max-height: 0;
+    overflow: hidden;
+}
+
+.submenuEnterActive {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 300ms ease-out;
+}
+
+.submenuExit {
+    max-height: 500px;
+}
+
+.submenuExitActive {
+    max-height: 0;
+    transition: max-height 300ms ease-in;
+}
