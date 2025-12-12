@@ -10,7 +10,7 @@ interface SearchSectionProps {
     loading: boolean;
     isMobile: boolean;
     comCode: string;
-    comItems: { code: string; codeName: string }[];
+    comItems: { code: string; codename: string }[];
     onComCodeChange: (comCode: string) => void;
 }
 
@@ -46,14 +46,14 @@ export default function SearchSection({
                         <div className="flex justify-between">
                             <button
                                 onClick={onSearch}
-                                className="w-[48px] h-12 bg-[#A50A2E] rounded-[5px] md:w-[48px] ml-2"
+                                className="w-[48px] h-12 bg-[#A50A2E] rounded-[5px] md:w-[48px] ml-2 cursor-pointer"
                                 disabled={loading}
                             >
                                 <img className="mx-auto" src="/images/icon_search.png" alt="검색" />
                             </button>
                             <button
                                 onClick={onReset}
-                                className="w-[48px] border bg-white rounded-[5px] ml-1 md:w-[48px] md:h-12"
+                                className="w-[48px] border border-[#E1E1E1] bg-white rounded-[5px] ml-1 md:w-[48px] md:h-12 cursor-pointer"
                                 disabled={loading}
                             >
                                 <img
@@ -68,7 +68,7 @@ export default function SearchSection({
                         <select
                             value={comCode}
                             onChange={(e) => onComCodeChange(e.target.value)}
-                            className="w-[40%] block h-12 pl-4 border border-[#E1E1E1] rounded-md appearance-none select_shop focus:outline-none bg-white"
+                            className="w-[40%] block h-12 pl-4 border border-[#E1E1E1] rounded-md appearance-none select_shop focus:outline-none bg-white cursor-pointer"
                             disabled={loading}
                         >
                             <option value="">전체</option>
@@ -102,14 +102,14 @@ export default function SearchSection({
                 <div className="flex pl-2">
                     <button
                         onClick={onSearch}
-                        className="w-[48px] h-12 bg-[#A50A2E] rounded-[5px] hidden md:w-[48px] md:h-12 md:block"
+                        className="w-[48px] h-12 bg-[#A50A2E] rounded-[5px] hidden md:w-[48px] md:h-12 md:block cursor-pointer"
                         disabled={loading}
                     >
                         <img className="mx-auto" src="/images/icon_search.png" alt="검색" />
                     </button>
                     <button
                         onClick={onReset}
-                        className="w-[48px] border ml-2 bg-white rounded-[5px] hidden md:block md:w-[48px] md:h-12"
+                        className="w-[48px] border border-[#E1E1E1] ml-2 bg-white rounded-[5px] hidden md:block md:w-[48px] md:h-12 cursor-pointer"
                         disabled={loading}
                     >
                         <img className="mx-auto" src="/images/icon_refresh.png" alt="초기화" />
@@ -118,13 +118,13 @@ export default function SearchSection({
                     <select
                         value={comCode}
                         onChange={(e) => onComCodeChange(e.target.value)}
-                        className="hidden md:block h-12 pl-4 md:ml-6 md:pl-4 border border-[#E1E1E1] rounded-md appearance-none select_shop focus:outline-none md:w-[200px] md:h-12 md:bg-white"
+                        className="hidden md:block h-12 pl-4 md:ml-6 md:pl-4 border border-[#E1E1E1] rounded-md appearance-none select_shop focus:outline-none md:w-[200px] md:h-12 md:bg-white cursor-pointer"
                         disabled={loading}
                     >
                         <option value="">전체</option>
                         {comItems.map((item) => (
                             <option key={item.code} value={item.code}>
-                                {item.codeName}
+                                {item.codename}
                             </option>
                         ))}
                     </select>

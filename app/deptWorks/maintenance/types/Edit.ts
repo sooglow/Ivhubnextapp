@@ -1,7 +1,7 @@
 export interface MaintenanceViewData {
-    maintenanceSerial: string;
+    serial?: string;
     comCode: string;
-    comName: string;
+    asComName: string;
     asDay: string;
     userId: string;
     subject: string;
@@ -9,6 +9,8 @@ export interface MaintenanceViewData {
     asResult: string;
     bigo: string;
     result: string;
+    wdate: string;
+    writer?: string;
 }
 
 export interface MaintenanceViewResponse {
@@ -18,9 +20,8 @@ export interface MaintenanceViewResponse {
 }
 
 export interface MaintenanceUpdateRequest {
-    maintenanceSerial: string;
+    serial?: string;
     comCode: string;
-    comName: string;
     asDay: string;
     userId: string;
     subject: string;

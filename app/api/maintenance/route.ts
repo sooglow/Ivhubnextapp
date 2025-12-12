@@ -12,10 +12,13 @@ export async function GET(request: NextRequest) {
         const result = await MaintenanceProcedures.getMaintenanceList(comCode, pageNumber, pageSize);
 
         if (result.success) {
+            const items = result.data || [];
+            const totalCount = items.length > 0 ? items[0].totalCount || 0 : 0;
+
             return NextResponse.json({
                 result: true,
-                data: result.data || [],
-                totalCount: result.data?.length || 0,
+                data: items,
+                totalCount: totalCount,
             });
         } else {
             return NextResponse.json(

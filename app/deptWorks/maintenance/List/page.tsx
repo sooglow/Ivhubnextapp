@@ -64,7 +64,7 @@ export default function MaintenanceList() {
             header: "접수일",
             cell: (info) => info.getValue() ?? "",
         }),
-        columnHelper.accessor("comName", {
+        columnHelper.accessor("asComName", {
             header: "계약업체",
             cell: (info) => info.getValue() ?? "",
         }),
@@ -103,7 +103,7 @@ export default function MaintenanceList() {
                         </div>
                         <div className="pt-1 font-semibold text-ellipsis"></div>
                         <div className="pt-1 flex justify-between">
-                            <div className="pt-1">{row.comName ?? ""}</div>
+                            <div className="pt-1">{row.asComName ?? ""}</div>
                             <div className="pt-1">{row.asDay ?? ""}</div>
                         </div>
                     </div>
@@ -279,7 +279,7 @@ export default function MaintenanceList() {
                                                             ? "10%"
                                                             : header.id === "asDay"
                                                             ? "15%"
-                                                            : header.id === "comName"
+                                                            : header.id === "asComName"
                                                             ? "10%"
                                                             : header.id === "subject"
                                                             ? "40%"
@@ -313,7 +313,7 @@ export default function MaintenanceList() {
                                         <tr
                                             key={row.id}
                                             onClick={() =>
-                                                handleRowClick(row.original.maintenanceSerial)
+                                                handleRowClick(row.original.serial)
                                             }
                                             className="hover:bg-slate-100 cursor-pointer transition-all"
                                         >
@@ -326,7 +326,7 @@ export default function MaintenanceList() {
                                                                 ? "whitespace-nowrap"
                                                                 : cell.column.id === "asDay"
                                                                 ? "text-left whitespace-nowrap"
-                                                                : cell.column.id === "comName"
+                                                                : cell.column.id === "asComName"
                                                                 ? "text-left whitespace-nowrap"
                                                                 : cell.column.id === "subject"
                                                                 ? "max-w-[403px] text-left whitespace-nowrap overflow-hidden text-ellipsis"

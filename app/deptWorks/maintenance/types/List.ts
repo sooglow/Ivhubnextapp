@@ -1,11 +1,13 @@
 export interface MaintenanceListItem {
-    maintenanceSerial: string;
+    rowNumber: number;
+    serial: string;
     comCode: string;
-    comName: string;
+    asComName: string;
     asDay: string;
     userId: string;
     subject: string;
     result: string;
+    totalCount?: number;
 }
 
 export interface MaintenanceListResponse {
