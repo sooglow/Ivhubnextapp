@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { useMaintenanceView, useMaintenanceDelete } from "../../hooks/useMaintenance";
-import SafeHtmlComponent from "@/public/components/SafeHtmlComponent";
+
+const SafeHtmlComponent = dynamic(() => import("@/public/components/SafeHtmlComponent"), {
+    ssr: false,
+});
 
 interface MaintenanceViewProps {
     params: Promise<{ serial: string }>;
@@ -146,7 +150,7 @@ export default function MaintenanceView({ params }: MaintenanceViewProps) {
                         <div>
                             <button
                                 onClick={listClick}
-                                className="w-[105px] bg-[#A50A2E] hover:bg-slate-600 text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[105px] bg-[#A50A2E] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                                 disabled={isLoading || isDeleting}
                             >
                                 목록
@@ -155,7 +159,7 @@ export default function MaintenanceView({ params }: MaintenanceViewProps) {
                         <div>
                             <button
                                 onClick={editClick}
-                                className="w-[105px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[105px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                                 disabled={isLoading || isDeleting}
                             >
                                 수정
@@ -164,7 +168,7 @@ export default function MaintenanceView({ params }: MaintenanceViewProps) {
                         <div>
                             <button
                                 onClick={deleteClick}
-                                className="w-[105px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[105px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                                 disabled={isLoading || isDeleting}
                             >
                                 삭제

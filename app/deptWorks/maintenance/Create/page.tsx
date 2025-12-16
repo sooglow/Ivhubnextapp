@@ -9,10 +9,10 @@ import axios from "axios";
 
 export default function MaintenanceCreate() {
     const router = useRouter();
-    const [mItems, setMItems] = useState<any[]>([]);
+    const [mItems, setMItems] = useState<{ code: string; codename: string }[]>([]);
     const [comCode, setComCode] = useState("01");
     const [status, setStatus] = useState("접수");
-    const [asDay, setAsDay] = useState(new Date().toISOString().split("T")[0]);
+    const [asDay] = useState(new Date().toISOString().split("T")[0]);
 
     const subjectInput = useInput("", (value: string) => value.length <= 100);
     const asMemoInput = useInput("", (value: string) => value.length <= 5000);
@@ -110,7 +110,7 @@ export default function MaintenanceCreate() {
                                         >
                                             {mItems.map((item) => (
                                                 <option key={item.code} value={item.code}>
-                                                    {item.codeName}
+                                                    {item.codename}
                                                 </option>
                                             ))}
                                         </select>
@@ -195,7 +195,7 @@ export default function MaintenanceCreate() {
                         <div>
                             <button
                                 onClick={cancelClick}
-                                className="w-[150px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[150px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                                 disabled={isPending}
                             >
                                 취소
@@ -204,7 +204,7 @@ export default function MaintenanceCreate() {
                         <div className="pl-2">
                             <button
                                 onClick={saveBtnClick}
-                                className="w-[150px] bg-[#77829B] hover:bg-slate-600 text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[150px] bg-[#77829B] hover:bg-slate-600 text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                                 disabled={isPending}
                             >
                                 저장

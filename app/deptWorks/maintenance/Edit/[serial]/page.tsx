@@ -135,7 +135,7 @@ export default function MaintenanceEdit({ params }: MaintenanceEditProps) {
                                         >
                                             {mItems.map((item) => (
                                                 <option key={item.code} value={item.code}>
-                                                    {item.codeName}
+                                                    {item.codename}
                                                 </option>
                                             ))}
                                         </select>
