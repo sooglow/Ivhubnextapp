@@ -6,18 +6,31 @@ export async function GET(request: NextRequest) {
     try {
         const searchParams = request.nextUrl.searchParams;
         const comCode = searchParams.get("comCode") || "";
+        const keyword = searchParams.get("keyword") || "";
         const pageNumber = parseInt(searchParams.get("pageNumber") || "1");
         const pageSize = parseInt(searchParams.get("pageSize") || "10");
 
-        const result = await MaintenanceProcedures.getMaintenanceList(comCode, pageNumber, pageSize);
+        const result = await MaintenanceProcedures.getMaintenanceList(comCode, keyword, pageNumber, pageSize);
 
         if (result.success) {
             const items = result.data || [];
-            const totalCount = items.length > 0 ? items[0].totalCount || 0 : 0;
+            const totalCount = items.length > 0 ? items[0].TotalCount || 0 : 0;
+
+            // DB 필드명을 camelCase로 변환
+            const mappedItems = items.map((item: any) => ({
+                rowNumber: item.RowNumber,
+                serial: item.serial,
+                comCode: item.comcode,
+                asComName: item.ascomname,
+                asDay: item.asday,
+                userId: item.userid,
+                subject: item.subject,
+                result: item.result,
+            }));
 
             return NextResponse.json({
                 result: true,
-                data: items,
+                data: mappedItems,
                 totalCount: totalCount,
             });
         } else {

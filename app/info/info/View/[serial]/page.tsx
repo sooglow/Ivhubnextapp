@@ -49,7 +49,6 @@ export default function InfoView({ params }: Props) {
 
                 const data = response.data || ({} as InfoViewItem);
                 setPost(data);
-                console.log(data);
                 setCurrentInfoData(data);
             } catch (error: unknown) {
                 console.error("Fetch Error:", error);

@@ -133,12 +133,15 @@ export class EtcSalesProcedures extends BaseProcedures {
 
         const sql = await import("mssql");
 
-        const cleanValue = (val: any) => (val === "" || val === null || val === undefined) ? null : val;
-
-        console.log("sendDay value:", sendDay, "type:", typeof sendDay, "cleaned:", cleanValue(sendDay));
+        const cleanValue = (val: any) =>
+            val === "" || val === null || val === undefined ? null : val;
 
         return this.executeProc<any>("USP_CORE_ETC_SALES_C", [
-            { name: "etcsales_serial", type: sql.default.VarChar(10), value: cleanValue(etcSalesSerial) },
+            {
+                name: "etcsales_serial",
+                type: sql.default.VarChar(10),
+                value: cleanValue(etcSalesSerial),
+            },
             { name: "recman", type: sql.default.VarChar(20), value: cleanValue(recMan) },
             { name: "comcode", type: sql.default.VarChar(10), value: cleanValue(comCode) },
             { name: "comname", type: sql.default.VarChar(60), value: cleanValue(comName) },

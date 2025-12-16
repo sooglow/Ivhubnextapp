@@ -225,7 +225,6 @@ export default function InfoList(): React.ReactElement {
             const listStateItem = sessionStorage.getItem("listState");
             const listState = listStateItem ? JSON.parse(listStateItem) : null;
             if (listState?.info) {
-                console.log(listState.info);
                 keywordInput.setValue(listState.info.keyword);
                 setCurrentPage(listState.info.page);
                 sessionStorage.removeItem("listState");

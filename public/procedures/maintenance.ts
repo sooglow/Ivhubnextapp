@@ -6,6 +6,7 @@ export class MaintenanceProcedures extends BaseProcedures {
      */
     static async getMaintenanceList(
         comCode: string = "",
+        keyword: string = "",
         pageNumber: number = 1,
         pageSize: number = 10
     ) {
@@ -13,6 +14,7 @@ export class MaintenanceProcedures extends BaseProcedures {
 
         return this.executeProc<any>("USP_CORE_MAINTENANCE", [
             { name: "comcode", type: sql.default.VarChar(10), value: comCode || null },
+            { name: "keyword", type: sql.default.VarChar(50), value: keyword || null },
             { name: "pageNumber", type: sql.default.Int, value: pageNumber },
             { name: "pageSize", type: sql.default.Int, value: pageSize },
         ]);

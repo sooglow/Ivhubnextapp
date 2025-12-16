@@ -8,12 +8,12 @@ import {
 } from "../types/Edit";
 
 // 유지보수 계약업체 목록 조회
-export const useMaintenanceList = (comCode: string = "", pageNumber: number = 1, pageSize: number = 10) => {
+export const useMaintenanceList = (comCode: string = "", keyword: string = "", pageNumber: number = 1, pageSize: number = 10) => {
     return useQuery<MaintenanceListResponse>({
-        queryKey: ["maintenanceList", comCode, pageNumber, pageSize],
+        queryKey: ["maintenanceList", comCode, keyword, pageNumber, pageSize],
         queryFn: async () => {
             const response = await axios.get<MaintenanceListResponse>(
-                `/api/maintenance?comCode=${comCode}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+                `/api/maintenance?comCode=${comCode}&keyword=${keyword}&pageNumber=${pageNumber}&pageSize=${pageSize}`
             );
             return response.data;
         },

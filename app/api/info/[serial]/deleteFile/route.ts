@@ -13,10 +13,6 @@ export async function DELETE(request: NextRequest, { params }: Props) {
         const { searchParams } = new URL(request.url);
         const fileNumber = parseInt(searchParams.get("fileNumber") || "0");
 
-        console.log("=== 파일 삭제 API 호출 ===");
-        console.log("serial:", serial);
-        console.log("fileNumber:", fileNumber);
-
         const fileInfoResult = await InfoProcedures.getInfoView(serial);
 
         if (!fileInfoResult.success || !fileInfoResult.data || fileInfoResult.data.length === 0) {
@@ -46,7 +42,6 @@ export async function DELETE(request: NextRequest, { params }: Props) {
         // 3. 물리적 파일 삭제 (C#의 File.Delete와 동일)
         try {
             await deleteFile(fileName);
-            console.log("물리적 파일 삭제 완료");
         } catch (fileDeleteError) {
             console.warn("물리적 파일 삭제 실패:", fileDeleteError);
             // 파일이 없어도 데이터베이스는 업데이트

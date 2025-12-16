@@ -27,7 +27,6 @@ export default function SearchSection({
     comItems,
     onComCodeChange,
 }: SearchSectionProps) {
-    console.log(comItems);
     if (isMobile) {
         return (
             <div className="w-full h-[120px] bg-[#F9FBFC] rounded-[5px] md:w-full md:h-[140px] flex md:hidden items-center">
@@ -35,7 +34,7 @@ export default function SearchSection({
                     <div className="flex">
                         <div className="w-[100%]">
                             <input
-                                className="w-[100%] appearance-none block h-12 pl-4 text-sm focus:outline-none border border-[#E1E1E1] rounded-md"
+                                className="w-[100%] appearance-none block h-12 pl-4 text-sm focus:outline-none border border-[#E1E1E1] rounded-md bg-white disabled:bg-[#F9FBFC]"
                                 placeholder="제목"
                                 value={keywordValue}
                                 onChange={onKeywordChange}
@@ -91,7 +90,7 @@ export default function SearchSection({
                     <label className="font-semibold hidden md:block">검색</label>
                     <input
                         ref={keywordRef}
-                        className="w-[65%] hidden h-12 pl-6 text-sm focus:outline-none border border-[#E1E1E1] rounded-md md:w-[350px] md:ml-12 md:pl-4 md:h-12 md:block"
+                        className="w-[65%] hidden h-12 pl-6 text-sm focus:outline-none border border-[#E1E1E1] rounded-md md:w-[350px] md:ml-12 md:pl-4 md:h-12 md:block bg-white disabled:bg-[#F9FBFC]"
                         placeholder="제목"
                         value={keywordValue}
                         onChange={onKeywordChange}

@@ -8,9 +8,26 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         const result = await MaintenanceProcedures.getMaintenanceDetail(serial);
 
         if (result.success && result.data && result.data.length > 0) {
+            const item = result.data[0];
+
+            // DB 필드명을 camelCase로 변환
+            const mappedItem = {
+                serial: item.serial,
+                asDay: item.asday,
+                userId: item.userid,
+                comCode: item.comcode,
+                subject: item.subject,
+                asMemo: item.asmemo,
+                asResult: item.asresult,
+                bigo: item.bigo,
+                result: item.result,
+                wdate: item.wdate,
+                asComName: item.ascomname,
+            };
+
             return NextResponse.json({
                 result: true,
-                data: result.data[0],
+                data: mappedItem,
             });
         } else {
             return NextResponse.json(

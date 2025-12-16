@@ -13,7 +13,6 @@ export default function BasicInfo({
     editBtnClick,
     deleteBtnClick,
 }: BasicInfoProps) {
-    console.log(salesInfo);
     return (
         <>
             <div className="w-[92%] h-[58px] mx-auto mt-4 md:mt-8 flex justify-between rounded-tl-md rounded-tr-md border-[#E1E1E1] md:w-full md:h-[58px] md:mx-0 md:rounded-tl-md md:rounded-tr-md md:border-[#E1E1E1] border-0 border-x border-t">

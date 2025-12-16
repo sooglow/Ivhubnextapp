@@ -64,22 +64,25 @@ export default function MaintenanceView({ params }: MaintenanceViewProps) {
             <main className="w-full flex-grow md:pt-8 pt-4">
                 <div className="max-w-6xl mx-auto px-4">
                     <h2 className="md:pl-4 font-semibold text-2xl">유지보수 계약업체A/S</h2>
-                    <div className="h-[58px] mx-auto mt-4 px-4 md:px-6 md:mt-8 flex items-center justify-between rounded-tl-md rounded-tr-md border-[#E1E1E1] w-full md:h-[58px] md:rounded-tl-md md:rounded-tr-md md:border-[#E1E1E1] border-x border-t">
-                        <div className="text-[14px] md:text-[16px]">
-                            <p className="font-semibold text-[14px] text-[#A50A2E] my-auto md:text-[16px]">
+                    <div className="h-[58px] mx-auto mt-4 px-4 md:px-6 md:mt-8 flex items-center justify-between rounded-tl-md rounded-tr-md border-[#E1E1E1] w-full md:h-[58px]  md:rounded-tl-md md:rounded-tr-md md:border-[#E1E1E1] border-x border-t ">
+                        <div className="text-[14px] md:text-[16px] ">
+                            <p
+                                className="font-semibold text-[14px] text-[#A50A2E] my-auto
+                        md:text-[16px]"
+                            >
                                 {post.subject ?? ""}
                             </p>
                         </div>
-                        <div className="text-[14px] md:text-[16px] hidden md:block">
+                        <div className="text-[14px] md:text-[16px]  hidden md:block">
                             상태: {post.result ?? ""}
                         </div>
                     </div>
 
                     <div className="md:w-full md:h-full md:rounded-bl-md md:rounded-br-md md:border-[#E1E1E1] md:border-[1px] hidden md:block">
-                        <ul className="space-y-4 pt-3">
-                            <li className="w-full pb-3 flex justify-between border-b">
+                        <ul className="space-y-4  pt-3">
+                            <li className="w-full pb-3 flex justify-between border-b border-[#E1E1E1] ">
                                 <div className="mx-6">{post.userId ?? ""}</div>
-                                <div className="mx-6">작성일: {truncate(post.wdate ?? "", 12)}</div>
+                                <div className="mx-6">작성일: {truncate(post.wdate ?? "", 10)}</div>
                             </li>
                             <li>
                                 <div className="mx-6 pb-8">
@@ -111,11 +114,11 @@ export default function MaintenanceView({ params }: MaintenanceViewProps) {
 
                     {/* 모바일 */}
                     <div className="w-full h-[full] mx-auto border rounded-b-md md:hidden">
-                        <ul className="w-[full] space-y-2">
+                        <ul className="w-[full]   space-y-2">
                             <li className="py-[15px] px-4 flex justify-between text-[14px] border-b">
-                                <div className="font-semibold">상태 : {post.result ?? ""}</div>
-                                <div className="font-semibold">
-                                    작성일 : {truncate(post.wdate ?? "", 12)}
+                                <div className=" font-semibold ">상태 : {post.result ?? ""}</div>
+                                <div className=" font-semibold">
+                                    작성일 : {truncate(post.wdate ?? "", 10)}
                                 </div>
                             </li>
                             <div className="p-4 text-[14px] flex">
@@ -131,7 +134,7 @@ export default function MaintenanceView({ params }: MaintenanceViewProps) {
                                     <SafeHtmlComponent html={post.asResult} />
                                 </div>
                             </div>
-                            <div className="pb-8 text-[14px]">
+                            <div className="pb-8 text-[14px] ">
                                 <p className="font-semibold pl-4">비고</p>
                                 <div className="pl-4">
                                     <SafeHtmlComponent html={post.bigo ? post.bigo : "-"} />

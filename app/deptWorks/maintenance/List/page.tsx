@@ -45,7 +45,7 @@ export default function MaintenanceList() {
         data: queryData,
         isLoading,
         refetch,
-    } = useMaintenanceList(comCode, currentPage, PAGE_SIZE);
+    } = useMaintenanceList(comCode, searchKeyword, currentPage, PAGE_SIZE);
 
     const maintenanceList = queryData?.data || [];
     const totalCount = queryData?.totalCount || 0;
@@ -312,9 +312,7 @@ export default function MaintenanceList() {
                                     table.getRowModel().rows.map((row) => (
                                         <tr
                                             key={row.id}
-                                            onClick={() =>
-                                                handleRowClick(row.original.serial)
-                                            }
+                                            onClick={() => handleRowClick(row.original.serial)}
                                             className="hover:bg-slate-100 cursor-pointer transition-all"
                                         >
                                             {!isMobile ? (

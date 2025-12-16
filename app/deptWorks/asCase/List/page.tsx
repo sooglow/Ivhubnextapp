@@ -66,7 +66,6 @@ export default function AsCaseList(): React.ReactElement {
 
     // 데이터 추출
     const asCaseLists = queryData?.data?.items || [];
-    console.log(asCaseLists);
     const totalCount = queryData?.data?.totalCount || 0;
 
     const validateKeyword = useAlert([
