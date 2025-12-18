@@ -275,7 +275,7 @@ export default function TsSerialList() {
                                         ) : (
                                             <td
                                                 colSpan={6}
-                                                className="p-4 border rounded-[5px] md:hidden"
+                                                className="p-4 border border-[#E1E1E1] rounded-[5px] md:hidden"
                                             >
                                                 {row
                                                     .getVisibleCells()
