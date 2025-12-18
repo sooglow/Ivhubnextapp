@@ -67,45 +67,50 @@ export default function ExpandSection({
                                             onClick={() => onItemClick(list)}
                                             className="hover:bg-slate-100 cursor-pointer transition-all"
                                         >
-                                            <td className="p-4 text-[#0340E6] font-bold hidden md:border-t last:rounded-bl-md md:table-cell">
+                                            <td className="p-4 text-[#0340E6] font-bold hidden md:border-t border-[#E1E1E1] last:rounded-bl-md md:table-cell">
                                                 {list.saleDay ?? ""}
                                             </td>
-                                            <td className="p-4 text-left hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-left hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.salesMan ?? ""}
                                             </td>
-                                            <td className="max-w-[120px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t md:table-cell">
+                                            <td className="max-w-[120px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.prgName ?? ""}
                                             </td>
-                                            <td className="max-w-[120px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t md:table-cell">
+                                            <td className="max-w-[120px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.comName ?? ""}
                                             </td>
-                                            <td className="p-4 text-left hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-left hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.salesType ?? ""}
                                             </td>
-                                            <td className="p-4 text-right hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-right hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.userMax ? list.userMax.toLocaleString() : "0"}
                                             </td>
-                                            <td className="p-4 text-right hidden md:border-t md:table-cell">
-                                                {list.billPrice ? list.billPrice.toLocaleString() : "0"}
+                                            <td className="p-4 text-right hidden md:border-t border-[#E1E1E1] md:table-cell">
+                                                {list.billPrice
+                                                    ? list.billPrice.toLocaleString()
+                                                    : "0"}
                                             </td>
-                                            <td className="p-4 text-right hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-right hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.installPrice
                                                     ? list.installPrice.toLocaleString()
                                                     : "0"}
                                             </td>
-                                            <td className="p-4 text-right hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-right hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.installPriceAdd
                                                     ? list.installPriceAdd.toLocaleString()
                                                     : "0"}
                                             </td>
-                                            <td className="p-4 text-right hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-right hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.upgradePrice
                                                     ? list.upgradePrice.toLocaleString()
                                                     : "0"}
                                             </td>
 
                                             {/* 모바일 */}
-                                            <td colSpan={10} className="p-4 border rounded-[5px] md:hidden">
+                                            <td
+                                                colSpan={10}
+                                                className="p-4 border border-[#E1E1E1] rounded-[5px] md:hidden"
+                                            >
                                                 <div className="text-[#0340E6] font-semibold flex justify-between">
                                                     {truncate(list.saleDay ?? "", 12)}
                                                     <div className="font-semibold text-black text-ellipsis">
@@ -133,7 +138,7 @@ export default function ExpandSection({
                                         <tr className="transition-all">
                                             <td
                                                 colSpan={10}
-                                                className="pl-4 p-0 md:p-4 text-left whitespace-nowrap md:border-t text-sm"
+                                                className="pl-4 p-0 md:p-4 text-left whitespace-nowrap md:border-t border-[#E1E1E1] text-sm"
                                             >
                                                 <div className="hidden md:block">
                                                     메모:{" "}

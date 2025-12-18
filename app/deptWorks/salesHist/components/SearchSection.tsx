@@ -52,7 +52,7 @@ export default function SearchSection({
                             검색
                         </label>
                         <input
-                            className="w-[100%] hidden h-12 pl-6 md:ml-[38px] text-sm focus:outline-none border border-[#E1E1E1] rounded-md md:w-[300px] md:pl-4 md:h-12 md:block"
+                            className="w-[100%] hidden h-12 pl-6 md:ml-[38px] text-sm focus:outline-none border border-[#E1E1E1] rounded-md md:w-[300px] md:pl-4 md:h-12 md:block bg-white disabled:bg-[#F9FBFC]"
                             placeholder="업체명,업체코드"
                             value={keywordValue}
                             onChange={onKeywordChange}
@@ -107,7 +107,7 @@ export default function SearchSection({
                     <div className="w-[100%] flex justify-between px-4 pt-4">
                         <div className="w-[100%]">
                             <input
-                                className="w-[100%] appearance-none h-12 pl-4 text-sm focus:outline-none border border-[#E1E1E1] rounded-md"
+                                className="w-[100%] appearance-none h-12 pl-4 text-sm focus:outline-none border border-[#E1E1E1] rounded-md bg-white disabled:bg-[#F9FBFC]"
                                 placeholder="제목"
                                 value={keywordValue}
                                 onChange={onKeywordChange}

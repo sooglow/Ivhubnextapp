@@ -21,11 +21,15 @@ export class SalesHistProcedures extends BaseProcedures {
     /**
      * 영업활동 목록 조회 (납품 또는 영업활동)
      * 프로시저: USP_CORE_SALESLOG
+     *
+     * 프로시저는 두 개의 결과셋을 반환:
+     * - recordsets[0]: @userid 기반 개인별 조회
+     * - recordsets[1]: 전체 조회 (관리자용)
      */
     static async getSalesActivityList(params: SalesActivityListRequest) {
         const sql = await import("mssql");
 
-        return this.executeProc<any>("USP_CORE_SALESLOG", [
+        const result = await this.executeProcMultipleResultSets("USP_CORE_SALESLOG", [
             { name: "areacode", type: sql.default.VarChar(10), value: params.areaCode },
             { name: "userid", type: sql.default.VarChar(10), value: params.userId },
             { name: "saleday1", type: sql.default.VarChar(10), value: params.saleDay1 },
@@ -35,6 +39,20 @@ export class SalesHistProcedures extends BaseProcedures {
             { name: "pagenumber", type: sql.default.Int, value: params.pageNumber },
             { name: "pagesize", type: sql.default.Int, value: params.pageSize },
         ]);
+
+        if (result.success && result.recordsets) {
+            // 첫 번째 결과셋 사용 (개인별 조회)
+            // recordsets[0]: @userid 기반 개인별 조회
+            // recordsets[1]: 전체 조회 (관리자용)
+            const data = result.recordsets[0] || [];
+            return {
+                success: true,
+                data: data,
+                rowsAffected: result.rowsAffected,
+            };
+        }
+
+        return result;
     }
 
     /**

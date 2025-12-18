@@ -37,8 +37,6 @@ export async function DELETE(request: NextRequest, { params }: Props) {
             });
         }
 
-        console.log("삭제할 파일:", fileName);
-
         // 3. 물리적 파일 삭제 (C#의 File.Delete와 동일)
         try {
             await deleteFile(fileName);

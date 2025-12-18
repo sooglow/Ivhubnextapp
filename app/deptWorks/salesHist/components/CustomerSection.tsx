@@ -65,33 +65,36 @@ export default function CustomerSection({
                                             onClick={() => onItemClick(list)}
                                             className="hover:bg-slate-100 cursor-pointer transition-all"
                                         >
-                                            <td className="p-4 text-[#0340E6] font-bold hidden md:border-t last:rounded-bl-md md:table-cell">
+                                            <td className="p-4 text-[#0340E6] font-bold hidden md:border-t border-[#E1E1E1] last:rounded-bl-md md:table-cell">
                                                 {list.saleDay ?? ""}
                                             </td>
-                                            <td className="p-4 text-left hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-left hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.salesMan ?? ""}
                                             </td>
-                                            <td className="p-4 text-left hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-left hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.prgName ?? ""}
                                             </td>
-                                            <td className="max-w-[120px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t md:table-cell">
+                                            <td className="max-w-[120px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.comName ?? ""}
                                             </td>
-                                            <td className="p-4 text-left hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-left hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.areaName ?? ""}
                                             </td>
-                                            <td className="p-4 text-left hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-left hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.salesType ?? ""}
                                             </td>
-                                            <td className="p-4 text-center hidden md:border-t md:table-cell">
+                                            <td className="p-4 text-center hidden md:border-t border-[#E1E1E1] md:table-cell">
                                                 {list.saleHour ?? "0"}
                                             </td>
-                                            <td className="max-w-[230px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t md:table-cell">
+                                            <td className="max-w-[230px] p-4 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:border-t border-[#E1E1E1]  md:table-cell">
                                                 {list.specialMemo ?? ""}
                                             </td>
 
                                             {/* 모바일 */}
-                                            <td colSpan={8} className="p-4 border rounded-[5px] md:hidden">
+                                            <td
+                                                colSpan={8}
+                                                className="p-4 border rounded-[5px] md:hidden"
+                                            >
                                                 <div className="text-[#0340E6] font-semibold flex justify-between">
                                                     {truncate(list.saleDay ?? "", 12)}
                                                     <div className="font-semibold text-black text-ellipsis">

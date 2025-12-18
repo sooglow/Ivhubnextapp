@@ -213,7 +213,7 @@ export default function SalesHistList() {
 
                     {/* 영업문의 목록 섹션 */}
                     <SalesInquirySection
-                        lists={inquiryData?.items || []}
+                        lists={inquiryData?.data?.items || []}
                         loading={inquiryLoading}
                         expandedIndex={expandedIndex}
                         onToggleExpand={handleToggleExpand}
@@ -256,10 +256,10 @@ export default function SalesHistList() {
 
                     {/* 성장 및 확장 활동 섹션 */}
                     <ExpandSection
-                        lists={expandData?.items || []}
+                        lists={expandData?.data?.items || []}
                         loading={expandLoading}
                         currentPage={expandCurrentPage}
-                        totalCount={expandData?.totalCount || 0}
+                        totalCount={expandData?.data?.totalCount || 0}
                         pageSize={3}
                         onPageChange={setExpandCurrentPage}
                         onItemClick={handleActivityClick}
@@ -267,10 +267,10 @@ export default function SalesHistList() {
 
                     {/* 고객 지원 및 관리 활동 섹션 */}
                     <CustomerSection
-                        lists={customerData?.items || []}
+                        lists={customerData?.data?.items || []}
                         loading={customerLoading}
                         currentPage={customerCurrentPage}
-                        totalCount={customerData?.totalCount || 0}
+                        totalCount={customerData?.data?.totalCount || 0}
                         pageSize={3}
                         onPageChange={setCustomerCurrentPage}
                         onItemClick={handleActivityClick}

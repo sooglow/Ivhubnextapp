@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useInput } from "@/public/hooks/useInput";
 import { useUpdateSalesActivity, useDeleteSalesActivity } from "../hooks/useSalesHist";
 import { SalesActivityItem } from "../types/Activity";
@@ -20,7 +15,7 @@ interface UpdateSalesHistModalProps {
 // 프로그램 목록 타입
 interface PrgItem {
     code: string;
-    codeName: string;
+    codename: string;
 }
 
 export default function UpdateSalesHistModal({
@@ -204,7 +199,7 @@ export default function UpdateSalesHistModal({
                                 >
                                     {prgItems.map((item) => (
                                         <option key={item.code} value={item.code}>
-                                            {item.codeName}
+                                            {item.codename}
                                         </option>
                                     ))}
                                 </select>
@@ -250,7 +245,9 @@ export default function UpdateSalesHistModal({
                         </li>
                         <li className="w-full flex justify-between items-baseline pt-5">
                             <div className="flex items-baseline">
-                                <label className="font-semibold whitespace-nowrap pr-2">설치비</label>
+                                <label className="font-semibold whitespace-nowrap pr-2">
+                                    설치비
+                                </label>
                                 <input
                                     className="ml-12 md:ml-[25px] h-10 bg-white border border-[#E1E1E1] rounded-md py-[10px] pl-4 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 md:text-sm text-right"
                                     value={installPriceInput.value}
@@ -331,7 +328,7 @@ export default function UpdateSalesHistModal({
                             >
                                 {prgItems.map((item) => (
                                     <option key={item.code} value={item.code}>
-                                        {item.codeName}
+                                        {item.codename}
                                     </option>
                                 ))}
                             </select>
@@ -382,7 +379,9 @@ export default function UpdateSalesHistModal({
                         </li>
                         <li className="w-full flex-col items-baseline pt-4">
                             <div className="flex items-baseline">
-                                <label className="font-semibold whitespace-nowrap pr-2">설치비</label>
+                                <label className="font-semibold whitespace-nowrap pr-2">
+                                    설치비
+                                </label>
                             </div>
                             <input
                                 className="mt-2 h-10 w-full bg-white border border-[#E1E1E1] rounded-md py-[10px] pl-4 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 md:text-sm text-right"

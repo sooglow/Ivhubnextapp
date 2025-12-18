@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useInput } from "@/public/hooks/useInput";
 import { useCreateSalesActivity } from "../hooks/useSalesHist";
 import { SalesInquiryItem } from "../types/List";
@@ -20,7 +15,7 @@ interface CreateSalesHistModalProps {
 // 프로그램 목록 타입
 interface PrgItem {
     code: string;
-    codeName: string;
+    codename: string;
 }
 
 export default function CreateSalesHistModal({
@@ -64,9 +59,7 @@ export default function CreateSalesHistModal({
 
             // prgItems가 로드된 후 솔루션 자동 선택
             if (prgItems.length > 0 && selectedInquiry.prgName) {
-                const foundPrg = prgItems.find(
-                    (item) => item.codeName === selectedInquiry.prgName
-                );
+                const foundPrg = prgItems.find((item) => item.codename === selectedInquiry.prgName);
                 if (foundPrg) {
                     setPrg(foundPrg.code);
                 }
@@ -183,7 +176,7 @@ export default function CreateSalesHistModal({
                                 >
                                     {prgItems.map((item) => (
                                         <option key={item.code} value={item.code}>
-                                            {item.codeName}
+                                            {item.codename}
                                         </option>
                                     ))}
                                 </select>
@@ -270,7 +263,7 @@ export default function CreateSalesHistModal({
                             >
                                 {prgItems.map((item) => (
                                     <option key={item.code} value={item.code}>
-                                        {item.codeName}
+                                        {item.codename}
                                     </option>
                                 ))}
                             </select>

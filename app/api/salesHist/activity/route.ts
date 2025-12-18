@@ -40,11 +40,10 @@ export async function GET(request: NextRequest) {
 
         if (result.success) {
             const items = result.data || [];
-
-            // DB 필드명 → camelCase 변환
+            // DB 필드명(소문자 + 언더스코어) → camelCase 변환
             const mappedItems = items.map((item: any) => ({
-                actSerial: item.actserial,
-                actSeqNo: item.actseqno,
+                actSerial: item.act_serial,
+                actSeqNo: item.act_seqno,
                 userId: item.userid,
                 saleDay: item.saleday,
                 salesMan: item.salesman,
@@ -56,11 +55,11 @@ export async function GET(request: NextRequest) {
                 salesType: item.salestype,
                 userMax: item.usermax,
                 billPrice: item.billprice,
-                installPrice: item.installprice,
-                installPriceAdd: item.installpriceadd,
-                upgradePrice: item.upgradeprice,
+                installPrice: item.install_price,
+                installPriceAdd: item.install_price_add,
+                upgradePrice: item.upgrade_price,
                 saleHour: item.salehour,
-                specialMemo: item.specialmemo,
+                specialMemo: item.special_memo,
             }));
 
             // totalCount 계산 (첫 번째 아이템의 totalcount 또는 배열 길이)

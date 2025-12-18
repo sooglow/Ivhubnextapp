@@ -49,15 +49,17 @@ export const useUpdateSalesState = () => {
 };
 
 // 3. 성장 및 확장 활동 목록 조회 (StateName="납품")
-export const useExpandActivityList = (
-    areaCode: string,
-    userId: string,
-    saleDay1: string,
-    saleDay2: string,
-    keyword: string,
-    pageNumber: number,
-    pageSize: number = 3
-) => {
+export const useExpandActivityList = (params: {
+    areaCode: string;
+    userId: string;
+    saleDay1: string;
+    saleDay2: string;
+    keyword: string;
+    pageNumber: number;
+    pageSize?: number;
+}) => {
+    const { areaCode, userId, saleDay1, saleDay2, keyword, pageNumber, pageSize = 3 } = params;
+
     return useQuery<SalesActivityListResponse>({
         queryKey: [
             "expandActivityList",
@@ -69,7 +71,7 @@ export const useExpandActivityList = (
             pageNumber,
         ],
         queryFn: async () => {
-            const params = new URLSearchParams({
+            const searchParams = new URLSearchParams({
                 AreaCode: areaCode,
                 UserId: userId,
                 SaleDay1: saleDay1,
@@ -81,7 +83,7 @@ export const useExpandActivityList = (
             });
 
             const response = await axios.get<SalesActivityListResponse>(
-                `/api/salesHist/activity?${params.toString()}`,
+                `/api/salesHist/activity?${searchParams.toString()}`,
                 { headers: getAuthHeaders() }
             );
             return response.data;
@@ -91,15 +93,17 @@ export const useExpandActivityList = (
 };
 
 // 4. 고객 지원 및 관리 활동 목록 조회 (StateName="영업활동")
-export const useCustomerActivityList = (
-    areaCode: string,
-    userId: string,
-    saleDay1: string,
-    saleDay2: string,
-    keyword: string,
-    pageNumber: number,
-    pageSize: number = 3
-) => {
+export const useCustomerActivityList = (params: {
+    areaCode: string;
+    userId: string;
+    saleDay1: string;
+    saleDay2: string;
+    keyword: string;
+    pageNumber: number;
+    pageSize?: number;
+}) => {
+    const { areaCode, userId, saleDay1, saleDay2, keyword, pageNumber, pageSize = 3 } = params;
+
     return useQuery<SalesActivityListResponse>({
         queryKey: [
             "customerActivityList",
@@ -111,7 +115,7 @@ export const useCustomerActivityList = (
             pageNumber,
         ],
         queryFn: async () => {
-            const params = new URLSearchParams({
+            const searchParams = new URLSearchParams({
                 AreaCode: areaCode,
                 UserId: userId,
                 SaleDay1: saleDay1,
@@ -123,7 +127,7 @@ export const useCustomerActivityList = (
             });
 
             const response = await axios.get<SalesActivityListResponse>(
-                `/api/salesHist/activity?${params.toString()}`,
+                `/api/salesHist/activity?${searchParams.toString()}`,
                 { headers: getAuthHeaders() }
             );
             return response.data;
