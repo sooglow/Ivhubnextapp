@@ -12,15 +12,15 @@ import {
 import { useAlert } from "@/public/hooks/useAlert";
 import { useInput } from "@/public/hooks/useInput";
 import { parseJWT, saveStateToSessionStorage, truncate } from "@/public/utils/utils";
-import ListItemLoader from "@/app/homePage/ivInfo/components/ListItemLoader";
-import MobileListItemLoader from "@/app/homePage/ivInfo/components/MobileListItemLoader";
+import ListItemLoader from "@/app/homePage/ivAi/components/ListItemLoader";
+import MobileListItemLoader from "@/app/homePage/ivAi/components/MobileListItemLoader";
 import Pagination from "@/public/components/Pagination";
-import SearchSection from "@/app/homePage/ivInfo/components/SearchSection";
-import { UserInfo } from "@/app/homePage/ivInfo/types/Create";
-import { IvInfoItem } from "@/app/homePage/ivInfo/types/List";
-import { useIvInfoList } from "@/app/homePage/ivInfo/hooks/useIvInfoList";
+import SearchSection from "@/app/homePage/ivAi/components/SearchSection";
+import { UserInfo } from "@/app/homePage/ivAi/types/Create";
+import { IvAiItem } from "@/app/homePage/ivAi/types/List";
+import { useIvAiList } from "@/app/homePage/ivAi/hooks/useIvAiList";
 
-export default function IvInfoList(): React.ReactElement {
+export default function IvAiList(): React.ReactElement {
     const PAGE_SIZE = 10;
     const router = useRouter();
 
@@ -38,7 +38,7 @@ export default function IvInfoList(): React.ReactElement {
         isLoading,
         error,
         refetch,
-    } = useIvInfoList({
+    } = useIvAiList({
         keyword: keywordInput.value,
         currentPage,
         pageSize: PAGE_SIZE,
@@ -46,7 +46,7 @@ export default function IvInfoList(): React.ReactElement {
     });
 
     // 데이터 추출
-    const ivInfoLists = queryData?.data?.items || [];
+    const ivAiLists = queryData?.data?.items || [];
     const totalCount = queryData?.data?.totalCount || 0;
 
     const validateKeyword = useAlert([
@@ -66,7 +66,7 @@ export default function IvInfoList(): React.ReactElement {
     }, [error]);
 
     // Tanstack Table 컬럼 정의
-    const columnHelper = createColumnHelper<IvInfoItem>();
+    const columnHelper = createColumnHelper<IvAiItem>();
 
     const columns = [
         columnHelper.accessor("RowNumber", {
@@ -114,7 +114,7 @@ export default function IvInfoList(): React.ReactElement {
 
     // Tanstack Table 생성
     const table = useReactTable({
-        data: ivInfoLists,
+        data: ivAiLists,
         columns: columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -166,16 +166,16 @@ export default function IvInfoList(): React.ReactElement {
     }, [keywordInput, currentPage, refetch]);
 
     const createClick = useCallback((): void => {
-        router.push("/homePage/ivInfo/Create");
+        router.push("/homePage/ivAi/Create");
         saveStateToSessionStorage({
-            ivInfo: { keyword: keywordInput.value, page: currentPage },
+            ivAi: { keyword: keywordInput.value, page: currentPage },
         });
     }, [router, keywordInput.value, currentPage]);
 
     const listItemClick = useCallback((serial: string): void => {
-        router.push(`/homePage/ivInfo/Edit/${serial}`);
+        router.push(`/homePage/ivAi/Edit/${serial}`);
         saveStateToSessionStorage({
-            ivInfo: { keyword: keywordInput.value, page: currentPage },
+            ivAi: { keyword: keywordInput.value, page: currentPage },
         });
     });
 
@@ -209,9 +209,9 @@ export default function IvInfoList(): React.ReactElement {
 
             const listStateItem = sessionStorage.getItem("listState");
             const listState = listStateItem ? JSON.parse(listStateItem) : null;
-            if (listState?.ivInfo) {
-                keywordInput.setValue(listState.ivInfo.keyword);
-                setCurrentPage(listState.ivInfo.page);
+            if (listState?.ivAi) {
+                keywordInput.setValue(listState.ivAi.keyword);
+                setCurrentPage(listState.ivAi.page);
                 sessionStorage.removeItem("listState");
             } else {
                 setCurrentPage(1);
@@ -225,7 +225,7 @@ export default function IvInfoList(): React.ReactElement {
         <div className="flex flex-col min-h-screen">
             <main className="w-full flex-grow">
                 <div className="max-w-6xl mx-auto pb-20">
-                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 공지사항</h2>
+                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV AI게시판</h2>
 
                     <SearchSection
                         keywordRef={keywordRef}

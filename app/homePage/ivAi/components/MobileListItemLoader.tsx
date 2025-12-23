@@ -1,0 +1,32 @@
+import React from "react";
+import ContentLoader from "react-content-loader";
+
+interface MobileListItemLoaderProps {
+    [key: string]: any;
+}
+
+function MobileListItemLoader(props: MobileListItemLoaderProps): React.ReactElement {
+    return (
+        <>
+            <ContentLoader
+                speed={2}
+                width="100%"
+                height={250}
+                viewBox="0 0 1148 850"
+                backgroundColor="#f3f3f3"
+                foregroundColor="#ecebeb"
+                {...props}
+            >
+                {[8, 450].map((y, idx) => {
+                    return (
+                        <React.Fragment key={idx}>
+                            <rect x="8" y={y} rx="4" ry="4" width="1148" height="400" />
+                        </React.Fragment>
+                    );
+                })}
+            </ContentLoader>
+        </>
+    );
+}
+
+export default MobileListItemLoader;
