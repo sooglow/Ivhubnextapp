@@ -70,13 +70,25 @@ export default function IvInfoEdit({ params }: { params: Promise<{ serial: strin
             ip: string;
             contents: string;
         }) => updateIvBoard(data),
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             if (data.result) {
                 alert("수정되었습니다.");
-                queryClient.invalidateQueries({ queryKey: ["ivInfoList"] });
+                // Edit 페이지 캐시 무효화
+                await queryClient.invalidateQueries({
+                    queryKey: ["ivInfoEdit", serial],
+                    refetchType: "all"
+                });
+                // List 페이지 캐시 무효화
+                await queryClient.invalidateQueries({
+                    queryKey: ["ivInfoList"],
+                    refetchType: "all"
+                });
+                await queryClient.refetchQueries({
+                    queryKey: ["ivInfoList"],
+                    type: "all"
+                });
                 sessionStorage.removeItem("listState");
                 router.push("/homePage/ivInfo/List");
-                router.refresh();
             } else {
                 alert(data.errMsg || "수정에 실패했습니다.");
             }
@@ -88,13 +100,25 @@ export default function IvInfoEdit({ params }: { params: Promise<{ serial: strin
 
     const deleteMutation = useMutation({
         mutationFn: (serial: string) => deleteIvBoard(serial),
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             if (data.result) {
                 alert("삭제되었습니다.");
-                queryClient.invalidateQueries({ queryKey: ["ivInfoList"] });
+                // Edit 페이지 캐시 무효화
+                await queryClient.invalidateQueries({
+                    queryKey: ["ivInfoEdit", serial],
+                    refetchType: "all"
+                });
+                // List 페이지 캐시 무효화
+                await queryClient.invalidateQueries({
+                    queryKey: ["ivInfoList"],
+                    refetchType: "all"
+                });
+                await queryClient.refetchQueries({
+                    queryKey: ["ivInfoList"],
+                    type: "all"
+                });
                 sessionStorage.removeItem("listState");
                 router.push("/homePage/ivInfo/List");
-                router.refresh();
             } else {
                 alert(data.errMsg || "삭제에 실패했습니다.");
             }
