@@ -15,6 +15,7 @@ import { parseJWT, saveStateToSessionStorage, truncate } from "@/public/utils/ut
 import ListItemLoader from "@/app/homePage/ivInfo/components/ListItemLoader";
 import MobileListItemLoader from "@/app/homePage/ivInfo/components/MobileListItemLoader";
 import Pagination from "@/public/components/Pagination";
+import SearchSection from "@/app/homePage/ivInfo/components/SearchSection";
 import { UserInfo } from "@/app/homePage/ivInfo/types/Create";
 import { IvInfoItem } from "@/app/homePage/ivInfo/types/List";
 import { useIvInfoList } from "@/app/homePage/ivInfo/hooks/useIvInfoList";
@@ -75,7 +76,7 @@ export default function IvInfoList(): React.ReactElement {
         columnHelper.accessor("subject", {
             header: "제목",
             cell: (info) => (
-                <span className="max-w-[400px] whitespace-nowrap overflow-hidden text-ellipsis block">
+                <span className="max-w-[680px] whitespace-nowrap overflow-hidden text-ellipsis block">
                     {info.getValue()}
                 </span>
             ),
@@ -87,10 +88,6 @@ export default function IvInfoList(): React.ReactElement {
         columnHelper.accessor("wdate", {
             header: "작성일",
             cell: (info) => truncate(info.getValue(), 11),
-        }),
-        columnHelper.accessor("visited", {
-            header: "조회수",
-            cell: (info) => info.getValue(),
         }),
     ];
 
@@ -107,7 +104,7 @@ export default function IvInfoList(): React.ReactElement {
                         <div className="pt-1 font-semibold text-ellipsis">{row.subject}</div>
                         <div className="pt-1 flex justify-between">
                             <div className="pt-1">{row.writer}</div>
-                            <div className="pt-1">{truncate(row.wdate, 12)}</div>
+                            <div className="pt-1">{truncate(row.wdate, 11)}</div>
                         </div>
                     </div>
                 );
@@ -176,7 +173,7 @@ export default function IvInfoList(): React.ReactElement {
     }, [router, keywordInput.value, currentPage]);
 
     const listItemClick = useCallback((serial: string): void => {
-        router.push(`/homePage/ivInfo/View/${serial}`);
+        router.push(`/homePage/ivInfo/Edit/${serial}`);
         saveStateToSessionStorage({
             ivInfo: { keyword: keywordInput.value, page: currentPage },
         });
@@ -228,38 +225,17 @@ export default function IvInfoList(): React.ReactElement {
         <div className="flex flex-col min-h-screen">
             <main className="w-full flex-grow">
                 <div className="max-w-6xl mx-auto pb-20">
-                    <h2 className="pl-4 font-semibold text-2xl md:py-8 py-4">공지사항</h2>
+                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 공지사항</h2>
 
-                    {/* 검색탭 */}
-                    <div className="md:px-4 px-4">
-                        <div className="flex flex-row justify-end">
-                            <input
-                                type="text"
-                                id="keyword"
-                                ref={keywordRef}
-                                className="w-[300px] h-10 rounded-[5px] border border-[#E1E1E1] px-3 text-[14px] focus:outline-none focus:border-[#77829B]"
-                                placeholder="검색어를 입력하세요"
-                                value={keywordInput.value}
-                                onChange={keywordInput.onChange}
-                                onKeyDown={enterKeyPress}
-                                maxLength={50}
-                            />
-                            <button
-                                onClick={searchClick}
-                                disabled={isLoading}
-                                className="ml-2 w-[80px] h-10 bg-[#0340E6] text-[#FFFFFF] rounded-[5px] text-[14px] cursor-pointer disabled:bg-gray-400"
-                            >
-                                검색
-                            </button>
-                            <button
-                                onClick={initClick}
-                                disabled={isLoading}
-                                className="ml-2 w-[80px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] cursor-pointer disabled:bg-gray-400"
-                            >
-                                초기화
-                            </button>
-                        </div>
-                    </div>
+                    <SearchSection
+                        keywordRef={keywordRef}
+                        keywordValue={keywordInput.value}
+                        onKeywordChange={keywordInput.onChange}
+                        onKeyPress={enterKeyPress}
+                        onSearch={searchClick}
+                        onReset={initClick}
+                        loading={isLoading}
+                    />
 
                     <div className="pt-5 pl-4 md:pt-5 md:pl-4">
                         <button
@@ -272,28 +248,22 @@ export default function IvInfoList(): React.ReactElement {
 
                     <div>
                         <table className="mt-2 md:mt-4 table-auto w-full border-separate border-spacing-[14px] rounded md:border-spacing-0 md:border-[#E1E1E1] md:rounded-[5px] md:border">
-                            <thead className="hidden md:border md:border-separate md:rounded-l-sm md:rounded-r-sm md:table-header-group">
+                            <thead className="hidden md:border  md:border-separate md:rounded-l-sm md:rounded-r-sm md:table-header-group bg-[#F9FBFC] text-[14px]">
                                 {table.getHeaderGroups().map((headerGroup) => (
-                                    <tr key={headerGroup.id} className="bg-[#F9FBFC] text-[14px]">
+                                    <tr key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => (
                                             <th
                                                 key={header.id}
-                                                className={`p-4 ${
-                                                    header.id === "visited"
-                                                        ? "text-center"
-                                                        : "text-left"
-                                                }`}
+                                                className="p-4 text-left"
                                                 style={{
                                                     width:
                                                         header.id === "RowNumber"
-                                                            ? "8%"
+                                                            ? "10%"
                                                             : header.id === "subject"
-                                                            ? "45%"
+                                                            ? "60%"
                                                             : header.id === "writer"
-                                                            ? "15%"
-                                                            : header.id === "wdate"
-                                                            ? "17%"
-                                                            : "15%",
+                                                            ? "10%"
+                                                            : "20%",
                                                 }}
                                             >
                                                 {flexRender(
@@ -308,7 +278,7 @@ export default function IvInfoList(): React.ReactElement {
                             <tbody>
                                 {isLoading ? (
                                     <tr>
-                                        <td colSpan={5}>
+                                        <td colSpan={4}>
                                             {isMobile ? (
                                                 <MobileListItemLoader />
                                             ) : (
@@ -327,11 +297,7 @@ export default function IvInfoList(): React.ReactElement {
                                                 row.getVisibleCells().map((cell) => (
                                                     <td
                                                         key={cell.id}
-                                                        className={`p-4 hidden md:border-t md:border-[#E1E1E1] md:table-cell ${
-                                                            cell.column.id === "visited"
-                                                                ? "text-center"
-                                                                : "text-left"
-                                                        }`}
+                                                        className="p-4 text-left hidden md:border-t md:border-[#E1E1E1] md:table-cell"
                                                     >
                                                         {flexRender(
                                                             cell.column.columnDef.cell,
@@ -341,8 +307,8 @@ export default function IvInfoList(): React.ReactElement {
                                                 ))
                                             ) : (
                                                 <td
-                                                    colSpan={5}
-                                                    className="p-4 border rounded-[5px] md:hidden"
+                                                    colSpan={4}
+                                                    className="p-4 border border-[#E1E1E1] rounded-[5px] md:hidden"
                                                 >
                                                     <div className="text-[#0340E6] font-semibold">
                                                         {row.original.RowNumber}
@@ -364,8 +330,8 @@ export default function IvInfoList(): React.ReactElement {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={5} className="pl-2 pt-2 text-[16px]">
-                                            결과가 없습니다
+                                        <td colSpan={4} className="pl-2 pt-2 text-[16px]">
+                                            결과가 없습니다.
                                         </td>
                                     </tr>
                                 )}

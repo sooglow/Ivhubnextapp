@@ -50,7 +50,7 @@ export class IvBoardProcedures extends BaseProcedures {
 
     const sql = await import("mssql");
 
-    return this.executeProc<any>("USP_CORE_IVBOARD_C", [
+    return this.executeProcWithOutput<any>("USP_CORE_IVBOARD_C", [
       { name: "serial", type: sql.default.NVarChar(50), value: serial },
       { name: "subject", type: sql.default.NVarChar(200), value: subject },
       { name: "writer", type: sql.default.NVarChar(50), value: writer },
@@ -67,7 +67,7 @@ export class IvBoardProcedures extends BaseProcedures {
 
     const sql = await import("mssql");
 
-    return this.executeProc<any>("USP_CORE_IVBOARD_D", [
+    return this.executeProcWithOutput<any>("USP_CORE_IVBOARD_D", [
       { name: "serial", type: sql.default.NVarChar(50), value: serial },
     ]);
   }

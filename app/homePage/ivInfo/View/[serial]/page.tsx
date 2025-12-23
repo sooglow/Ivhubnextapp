@@ -1,76 +1,79 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
-import { parseJWT, truncate, formatFileSize, getFileDownloadUrl } from "@/public/utils/utils";
+import { parseJWT, truncate } from "@/public/utils/utils";
 import { UserInfo } from "@/app/homePage/ivInfo/types/Create";
 import SafeHtmlComponent from "@/public/components/SafeHtmlComponent";
 import { useIvInfoView } from "@/app/homePage/ivInfo/hooks/useIvInfoView";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteIvBoard } from "@/app/api/ivBoard/ivBoard";
-import { useLoading } from "@/public/contexts/LoadingContext";
 
 interface Props {
     params: Promise<{ serial: string }>;
 }
 
 export default function IvInfoView({ params }: Props) {
+    const { serial } = use(params);
     const router = useRouter();
     const queryClient = useQueryClient();
-    const { dispatch } = useLoading();
 
     const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
-    const [serial, setSerial] = useState<string>("");
-
-    useEffect(() => {
-        params.then((p) => setSerial(p.serial));
-    }, [params]);
 
     const { data: queryData, isLoading } = useIvInfoView({
         serial,
-        enabled: !!serial,
+        enabled: true,
     });
 
     const post = queryData?.data || null;
 
     const deleteMutation = useMutation({
         mutationFn: (serial: string) => deleteIvBoard(serial),
-        onSuccess: (data: any) => {
+        onSuccess: (data) => {
             if (data.result) {
                 alert("삭제되었습니다.");
                 queryClient.invalidateQueries({ queryKey: ["ivInfoList"] });
+                sessionStorage.removeItem("listState");
                 router.push("/homePage/ivInfo/List");
+                router.refresh();
             } else {
                 alert(data.errMsg || "삭제에 실패했습니다.");
             }
         },
         onError: (error: any) => {
-            console.error("Delete Error:", error);
-            alert("삭제 중 오류가 발생했습니다.");
+            alert("삭제 중 오류가 발생했습니다: " + error.message);
         },
     });
 
-    const handleList = useCallback(() => {
+    const listClick = useCallback(() => {
         router.push("/homePage/ivInfo/List");
     }, [router]);
 
-    const handleEdit = useCallback(() => {
-        if (userInfo.userId !== post?.writer && userInfo.userPower !== "0") {
+    const editClick = useCallback(() => {
+        if (!post) return;
+
+        if (userInfo.userId !== post.writer && userInfo.userPower !== "0") {
             alert("관리자 및 작성자만 수정이 가능합니다.");
             return;
         }
-        router.push(`/homePage/ivInfo/Edit/${serial}`);
-    }, [router, serial, userInfo, post]);
 
-    const handleDelete = useCallback(() => {
-        if (userInfo.userId !== post?.writer && userInfo.userPower !== "0") {
+        router.push(`/homePage/ivInfo/Edit/${serial}`);
+    }, [userInfo, post, serial, router]);
+
+    const deleteClick = useCallback(() => {
+        if (!post) return;
+
+        if (userInfo.userId !== post.writer && userInfo.userPower !== "0") {
             alert("관리자 및 작성자만 삭제가 가능합니다.");
             return;
         }
-        if (window.confirm("삭제 후에는 복원이 불가능합니다.\n삭제하시겠습니까?")) {
-            deleteMutation.mutate(serial);
+
+        if (!window.confirm("삭제후에는 복원이 불가능합니다.\n삭제 하시겠습니까?")) {
+            return;
         }
-    }, [deleteMutation, serial, userInfo, post]);
+
+        deleteMutation.mutate(serial);
+    }, [userInfo, post, serial, deleteMutation]);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -83,68 +86,35 @@ export default function IvInfoView({ params }: Props) {
         }
     }, []);
 
-    // 로딩 상태 관리
-    useEffect(() => {
-        dispatch({ type: "SET_LOADING", payload: isLoading });
-
-        // 클린업: 컴포넌트 언마운트 시 loading false로 리셋
-        return () => {
-            dispatch({ type: "SET_LOADING", payload: false });
-        };
-    }, [isLoading, dispatch]);
-
-    const canEdit =
-        userInfo?.userId && (userInfo?.userId === post?.writer || userInfo?.userPower === "0");
+    if (isLoading) {
+        return <div className="flex justify-center items-center min-h-screen">로딩 중...</div>;
+    }
 
     return (
         <div className="flex flex-col min-h-screen">
-            <main className="w-full flex-grow pt-4 md:pt-8">
-                <div className="max-w-6xl mx-auto px-0 md:px-4 pb-20">
-                    <h2 className="pl-4 font-semibold text-2xl">공지사항</h2>
-                    <div className="w-[92%] h-[58px] mx-auto mt-4 md:mt-8 flex justify-between rounded-tl-md rounded-tr-md border-[#E1E1E1] md:w-full md:h-[58px] md:rounded-tl-md md:rounded-tr-md md:border-[#E1E1E1] border-0 border-x border-t px-4 md:px-0">
-                        <p className="md:pl-6 font-semibold text-[14px] text-[#A50A2E] my-auto md:text-[16px]">
-                            {post?.subject}
+            <main className="w-full flex-grow p-4 pt-8">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="pl-4 font-semibold text-2xl">iV공지사항</h2>
+
+                    <div className="w-[92%] h-[58px] mx-auto mt-4 md:mt-8 flex justify-between rounded-tl-md rounded-tr-md border-[#E1E1E1] border-[1px] md:w-full md:h-[58px] md:rounded-tl-md md:rounded-tr-md md:border-[#E1E1E1] md:border-[1px]">
+                        <p className="pl-2 md:pl-6 font-semibold text-[14px] text-[#A50A2E] my-auto md:text-[16px]">
+                            공지: {post?.subject ?? ""}
                         </p>
-                        <div className="pt-4 pr-6 hidden md:block">조회수: {post?.visited}</div>
+                        <div className="pt-4 pr-6 hidden md:block">
+                            조회수: {post?.visited ?? ""}
+                        </div>
                     </div>
 
-                    {/* 데스크톱 */}
-                    <div className="md:w-full md:h-full md:rounded-bl-md md:rounded-br-md md:border-[#E1E1E1] md:border-[1px] hidden md:block">
+                    <div className="md:w-full md:h-full md:rounded-bl-md md:rounded-br-md  md:border-[1px] hidden md:block">
                         <ul className="space-y-4 pt-3">
                             <li className="pb-3 flex justify-between border-b border-[#E1E1E1]">
-                                <div className="mx-6">{post?.writer}</div>
-                                <div className="mx-6">{truncate(post?.wdate, 11)}</div>
-                            </li>
-                            <li className="font-semibold text-[14px]">
-                                {post?.fileName1 && (
-                                    <div className="mx-6 flex items-center">
-                                        <i className="fa-regular fa-file pr-2 text-gray-500"></i>
-                                        <a
-                                            href={getFileDownloadUrl(post?.fileName1)}
-                                            download
-                                            className="text-blue-600 hover:text-blue-800 underline"
-                                        >
-                                            {post?.fileName1}
-                                        </a>
-                                        {post?.fileSize1 && (
-                                            <span className="ml-2 text-gray-500">
-                                                ({formatFileSize(post?.fileSize1)})
-                                            </span>
-                                        )}
-                                    </div>
-                                )}
+                                <div className="mx-6">작성자: {post?.writer ?? ""}</div>
+                                <div className="mx-6">
+                                    작성일: {truncate(post?.wdate ?? "", 11)}
+                                </div>
                             </li>
                             <div className="mx-6 pb-8">
-                                <p className="font-semibold">문의내용</p>
-                                <div className="pl-4">
-                                    <SafeHtmlComponent html={post?.question} />
-                                </div>
-                            </div>
-                            <div className="mx-6 pb-8">
-                                <p className="font-semibold">처리내용</p>
-                                <div className="pl-4">
-                                    <SafeHtmlComponent html={post?.answer} />
-                                </div>
+                                <SafeHtmlComponent html={post?.contents ?? ""} />
                             </div>
                         </ul>
                     </div>
@@ -153,39 +123,14 @@ export default function IvInfoView({ params }: Props) {
                     <div className="w-[92%] h-[full] mx-auto border rounded-b-md md:hidden">
                         <ul className="w-[full] space-y-2">
                             <li className="py-[15px] px-4 flex justify-between text-[14px] border-b border-[#E1E1E1]">
-                                <div className="font-semibold">{post?.writer}</div>
-                                <div className="font-semibold">{truncate(post?.wdate, 11)}</div>
-                            </li>
-                            <li className="px-4 font-semibold">
-                                {post?.fileName1 && (
-                                    <div className="flex items-center mb-2">
-                                        <i className="fa-regular fa-file pr-2 text-gray-500"></i>
-                                        <div className="text-sm">
-                                            <a
-                                                href={getFileDownloadUrl(post?.fileName1)}
-                                                download
-                                                className="text-blue-600 hover:text-blue-800 underline"
-                                            >
-                                                {post?.fileName1}
-                                            </a>
-                                            {post?.fileSize1 && (
-                                                <span className="ml-2 text-gray-500">
-                                                    ({formatFileSize(post?.fileSize1)})
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                            </li>
-                            <div className="px-4 pb-4 text-[14px]">
-                                <p className="font-semibold">문의내용</p>
-                                <SafeHtmlComponent html={post?.question} />
-                            </div>
-                            <div className="pb-8 text-[14px] pt-2">
-                                <p className="font-semibold pl-4">처리내용</p>
-                                <div className="pl-4">
-                                    <SafeHtmlComponent html={post?.answer} />
+                                <div className="font-semibold">{post?.writer ?? ""}</div>
+                                <div className="font-semibold">
+                                    {truncate(post?.wdate ?? "", 11)}
                                 </div>
+                                <div className="font-semibold">조회수: {post?.visited ?? ""}</div>
+                            </li>
+                            <div className="px-4 pb-4">
+                                <SafeHtmlComponent html={post?.contents ?? ""} />
                             </div>
                         </ul>
                     </div>
@@ -193,33 +138,39 @@ export default function IvInfoView({ params }: Props) {
                     <div className="flex justify-center pt-3 space-x-4">
                         <div>
                             <button
-                                onClick={handleList}
-                                className="w-[105px] bg-[#A50A2E] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
+                                onClick={editClick}
+                                className={`${
+                                    userInfo.userId === post?.writer || userInfo.userPower === "0"
+                                        ? ""
+                                        : "hidden"
+                                } w-full px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none`}
+                                disabled={deleteMutation.isPending}
+                            >
+                                수정
+                            </button>
+                        </div>
+                        <div>
+                            <button
+                                onClick={deleteClick}
+                                className={`${
+                                    userInfo.userId === post?.writer || userInfo.userPower === "0"
+                                        ? ""
+                                        : "hidden"
+                                } w-full px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none`}
+                                disabled={deleteMutation.isPending}
+                            >
+                                {deleteMutation.isPending ? "삭제 중..." : "삭제"}
+                            </button>
+                        </div>
+                        <div>
+                            <button
+                                onClick={listClick}
+                                className="w-full bg-[#A50A2E] hover:bg-slate-600 text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                disabled={deleteMutation.isPending}
                             >
                                 목록
                             </button>
                         </div>
-                        {canEdit && (
-                            <>
-                                <div>
-                                    <button
-                                        onClick={handleDelete}
-                                        disabled={deleteMutation.isPending}
-                                        className="w-[105px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer"
-                                    >
-                                        {deleteMutation.isPending ? "삭제중..." : "삭제"}
-                                    </button>
-                                </div>
-                                <div>
-                                    <button
-                                        onClick={handleEdit}
-                                        className="w-[105px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
-                                    >
-                                        수정
-                                    </button>
-                                </div>
-                            </>
-                        )}
                     </div>
                 </div>
             </main>

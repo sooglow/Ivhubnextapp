@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 // 상세 조회
 export async function GET(
     request: NextRequest,
-    { params }: { params: { serial: string } }
+    { params }: { params: Promise<{ serial: string }> }
 ) {
     try {
-        const { serial } = params;
+        const { serial } = await params;
 
         const result = await IvBoardProcedures.getIvBoardView(serial);
 
@@ -23,6 +23,7 @@ export async function GET(
             }
 
             const item = rawData[0];
+
             const transformedData = {
                 serial: item.serial || "",
                 subject: item.subject || "",
@@ -61,14 +62,23 @@ export async function GET(
 // 삭제
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { serial: string } }
+    { params }: { params: Promise<{ serial: string }> }
 ) {
     try {
-        const { serial } = params;
+        const { serial } = await params;
 
         const result = await IvBoardProcedures.deleteIvBoard(serial);
 
         if (result.success) {
+            // OUTPUT 파라미터 체크 (프로시저에서 반환한 @errmsg)
+            if (result.output && result.output.errmsg) {
+                return NextResponse.json({
+                    result: false,
+                    data: null,
+                    errMsg: result.output.errmsg,
+                });
+            }
+
             return NextResponse.json({
                 result: true,
                 data: null,

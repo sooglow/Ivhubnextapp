@@ -11,20 +11,19 @@ function ListItemLoader(props: ListItemLoaderProps): React.ReactElement {
             <ContentLoader
                 speed={2}
                 width="100%"
-                height={570}
-                viewBox="0 0 1146 570"
+                height={568}
+                viewBox="0 0 1146 568"
                 backgroundColor="#f3f3f3"
                 foregroundColor="#ecebeb"
                 {...props}
             >
-                {[10, 66, 122, 178, 234, 290, 346, 407, 467, 519].map((y, idx) => {
+                {[10, 66, 122, 178, 234, 290, 346, 402, 468, 524].map((y, idx) => {
                     return (
                         <React.Fragment key={idx}>
-                            <rect x="8" y={y} rx="4" ry="4" width="80" height="38" />
-                            <rect x="108" y={y} rx="4" ry="4" width="500" height="38" />
-                            <rect x="628" y={y} rx="4" ry="4" width="150" height="38" />
-                            <rect x="798" y={y} rx="4" ry="4" width="180" height="38" />
-                            <rect x="998" y={y} rx="4" ry="4" width="100" height="38" />
+                            <rect x="8" y={y} rx="4" ry="4" width="100" height="38" />
+                            <rect x="128" y={y} rx="4" ry="4" width="670" height="38" />
+                            <rect x="818" y={y} rx="4" ry="4" width="90" height="38" />
+                            <rect x="928" y={y} rx="4" ry="4" width="200" height="38" />
                         </React.Fragment>
                     );
                 })}

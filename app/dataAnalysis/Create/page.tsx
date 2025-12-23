@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -163,7 +163,12 @@ export default function Create() {
         isLoading: carTypeDataIsLoading,
         refetch: carTypeDataRefetch,
     } = useQuery({
-        queryKey: ["carType", inputValue?.vin, inputValue?.vin?.slice(0, 4), vinValueTypeCode?.vin14_text],
+        queryKey: [
+            "carType",
+            inputValue?.vin,
+            inputValue?.vin?.slice(0, 4),
+            vinValueTypeCode?.vin14_text,
+        ],
         queryFn: () =>
             fetchCarTypeData(userInfo.userId, {
                 vin14: inputValue?.vin?.slice(0, 4),
@@ -181,7 +186,6 @@ export default function Create() {
             setVinValueTypeCode(
                 carTypeData.jarrResult.length > 0 ? carTypeData.jarrResult[0] : initVinValueTypeCode
             );
-            console.log(carTypeData)
             setInputValue((prev) => ({
                 ...prev,
                 epcCode: carTypeData.jarrResult[0]?.epc_code || "",
@@ -189,7 +193,7 @@ export default function Create() {
             toast({
                 description: "내용을 불러왔습니다.",
                 duration: 1000,
-                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
             });
         }
 
@@ -248,10 +252,8 @@ export default function Create() {
                 epccode: vinValueTypeCode?.epc_code,
             }),
         enabled:
-            !!userInfo?.userId &&
-            inputValue?.vin?.length === 11 &&
-            !!vinValueTypeCode?.epc_code,
-        refetchOnWindowFocus: false
+            !!userInfo?.userId && inputValue?.vin?.length === 11 && !!vinValueTypeCode?.epc_code,
+        refetchOnWindowFocus: false,
     });
 
     useEffect(() => {
@@ -300,7 +302,14 @@ export default function Create() {
             vin10: _value.slice(9, 10),
             vin11: _value.slice(10, 11),
         });
-        queryClient.removeQueries({ queryKey: ["carType", inputValue?.vin, inputValue?.vin?.slice(0, 4), vinValueTypeCode?.vin14_text] });
+        queryClient.removeQueries({
+            queryKey: [
+                "carType",
+                inputValue?.vin,
+                inputValue?.vin?.slice(0, 4),
+                vinValueTypeCode?.vin14_text,
+            ],
+        });
         carTypeDataRefetch();
     };
 
@@ -328,7 +337,9 @@ export default function Create() {
                 vinValueTypeCode?.[`${vinType}_text`] === "" &&
                 divideInputValue?.[vinType] !== ""
             ) {
-                const item = jsonGroup.find((item: any) => item.code === divideInputValue?.[vinType]);
+                const item = jsonGroup.find(
+                    (item: any) => item.code === divideInputValue?.[vinType]
+                );
 
                 if (item) {
                     mapData[vinType] = item.code;
@@ -405,24 +416,26 @@ export default function Create() {
         const [key, value] = Object.entries(item)[0];
 
         if (key && value) {
-            const itemIndex = selectEpcOpt.findIndex((epcItem: any) => epcItem.seqno === selectedSeqNo);
+            const itemIndex = selectEpcOpt.findIndex(
+                (epcItem: any) => epcItem.seqno === selectedSeqNo
+            );
             const newEpcItem =
                 itemIndex === -1
                     ? {
-                        seqno: "신규_01",
-                        opt1: "",
-                        opt2: "",
-                        opt3: "",
-                        opt4: "",
-                        opt5: "",
-                        opt6: "",
-                        opt7: "",
-                        [key]: value,
-                    }
+                          seqno: "신규_01",
+                          opt1: "",
+                          opt2: "",
+                          opt3: "",
+                          opt4: "",
+                          opt5: "",
+                          opt6: "",
+                          opt7: "",
+                          [key]: value,
+                      }
                     : {
-                        ...selectEpcOpt[itemIndex],
-                        [key]: value,
-                    };
+                          ...selectEpcOpt[itemIndex],
+                          [key]: value,
+                      };
 
             if (itemIndex === -1) {
                 setSelectedSeqNo("신규_01");
@@ -460,7 +473,7 @@ export default function Create() {
         toast({
             description: "모든 내용은 저장시 반영됩니다.",
             duration: 1000,
-            className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+            className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
         });
     };
 
@@ -488,44 +501,24 @@ export default function Create() {
         mutationFn: (data: any) => insertVinAnalysisData(userInfo?.userId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: [
-                    "carType",
-                    inputValue?.vin,
-                    inputValue?.vin?.slice(0, 4),
-                ]
+                queryKey: ["carType", inputValue?.vin, inputValue?.vin?.slice(0, 4)],
             });
             queryClient.invalidateQueries({
-                queryKey: [
-                    "vin5to11",
-                    vinValueTypeCode?.vin14_text,
-                    vinValueTypeCode?.vin14,
-                ]
+                queryKey: ["vin5to11", vinValueTypeCode?.vin14_text, vinValueTypeCode?.vin14],
             });
             queryClient.invalidateQueries({
-                queryKey: [
-                    "epcCode",
-                    inputValue?.vin,
-                    vinValueTypeCode?.epc_code,
-                ]
+                queryKey: ["epcCode", inputValue?.vin, vinValueTypeCode?.epc_code],
             });
 
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient
                 .invalidateQueries({
-                    queryKey: [
-                        "vin5to11",
-                        vinValueTypeCode?.vin14_text,
-                        vinValueTypeCode?.vin14,
-                    ]
+                    queryKey: ["vin5to11", vinValueTypeCode?.vin14_text, vinValueTypeCode?.vin14],
                 })
                 .then(() => {
                     queryClient
                         .invalidateQueries({
-                            queryKey: [
-                                "epcCode",
-                                inputValue?.vin,
-                                vinValueTypeCode?.epc_code,
-                            ]
+                            queryKey: ["epcCode", inputValue?.vin, vinValueTypeCode?.epc_code],
                         })
                         .then(() => {
                             if (allClear) {
@@ -542,7 +535,8 @@ export default function Create() {
                             toast({
                                 description: "저장 완료",
                                 duration: 1000,
-                                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+                                className:
+                                    "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
                             });
                         });
                 });
@@ -551,7 +545,7 @@ export default function Create() {
             toast({
                 description: `저장 실패-${error.message}`,
                 duration: 1000,
-                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
             });
         },
     });
@@ -622,7 +616,7 @@ export default function Create() {
             toast({
                 description: `작업 실패-${error.message}`,
                 duration: 1000,
-                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
             });
         },
     });
@@ -637,7 +631,7 @@ export default function Create() {
             toast({
                 description: `작업 실패-${error.message}`,
                 duration: 1000,
-                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
             });
         },
     });
@@ -677,7 +671,7 @@ export default function Create() {
             toast({
                 description: `작업 실패-${error.message}`,
                 duration: 1000,
-                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]"
+                className: "fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 w-[350px]",
             });
         },
     });
@@ -829,7 +823,10 @@ export default function Create() {
 
                                     <hr />
 
-                                    <CreateTypeCode vinValueTypeCode={vinValueTypeCode} carOtherGroup={carOtherGroup} />
+                                    <CreateTypeCode
+                                        vinValueTypeCode={vinValueTypeCode}
+                                        carOtherGroup={carOtherGroup}
+                                    />
                                 </div>
                             </CardContent>
                         </Card>
@@ -843,7 +840,9 @@ export default function Create() {
                                 <CardHeader>
                                     <CardTitle>
                                         <div className="flex items-center justify-between">
-                                            <p className="font-extrabold">EPC 옵션 및 소모품 정보</p>
+                                            <p className="font-extrabold">
+                                                EPC 옵션 및 소모품 정보
+                                            </p>
                                             <div className="flex">
                                                 <Button
                                                     className="rounded-r-none"
@@ -909,16 +908,18 @@ export default function Create() {
                                                         <SelectValue placeholder="EPC 세부코드" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {selectEpcOpt.map((item: any, idx: number) => {
-                                                            return (
-                                                                <SelectItem
-                                                                    key={idx}
-                                                                    value={item.seqno}
-                                                                >
-                                                                    {item.seqno}
-                                                                </SelectItem>
-                                                            );
-                                                        })}
+                                                        {selectEpcOpt.map(
+                                                            (item: any, idx: number) => {
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={idx}
+                                                                        value={item.seqno}
+                                                                    >
+                                                                        {item.seqno}
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                             </div>
@@ -969,7 +970,6 @@ export default function Create() {
                                                 저장 후 EPC 옵션 & 소모품 정보 계속 추가
                                             </Button>
                                         </div>
-
                                     </div>
                                 </CardContent>
                             </Card>

@@ -5,10 +5,10 @@ import fs from "fs/promises";
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { serial: string } }
+    { params }: { params: Promise<{ serial: string }> }
 ) {
     try {
-        const { serial } = params;
+        const { serial } = await params;
         const body = await request.json();
         const { fileNumber } = body;
 

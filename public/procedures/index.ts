@@ -101,7 +101,7 @@ export class BaseProcedures {
             const sql = await import("mssql");
 
             // OUTPUT 파라미터 추가 (프로시저에서 에러 메시지 반환용)
-            request.output("errmsg", sql.default.VarChar(100));
+            request.output("errmsg", sql.default.VarChar(500));
 
             // 모든 INPUT 파라미터 추가
             params.forEach((param) => {
