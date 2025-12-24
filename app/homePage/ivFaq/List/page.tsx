@@ -1,52 +1,53 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import {
-    useReactTable,
-    getCoreRowModel,
-    getPaginationRowModel,
-    flexRender,
-    createColumnHelper,
-} from "@tanstack/react-table";
+import ListItemLoader from "@/app/homePage/ivFaq/components/ListItemLoader";
+import MobileListItemLoader from "@/app/homePage/ivFaq/components/MobileListItemLoader";
+import SearchSection from "@/app/homePage/ivFaq/components/SearchSection";
+import { useIvFaqList } from "@/app/homePage/ivFaq/hooks/useIvFaqList";
+import { UserInfo } from "@/app/homePage/ivFaq/types/Create";
+import { IvFaqItem } from "@/app/homePage/ivFaq/types/List";
+import Pagination from "@/public/components/Pagination";
+import { SOLUTION } from "@/public/constants/solution";
 import { useAlert } from "@/public/hooks/useAlert";
 import { useInput } from "@/public/hooks/useInput";
 import { parseJWT, saveStateToSessionStorage, truncate } from "@/public/utils/utils";
-import ListItemLoader from "@/app/homePage/ivAi/components/ListItemLoader";
-import MobileListItemLoader from "@/app/homePage/ivAi/components/MobileListItemLoader";
-import Pagination from "@/public/components/Pagination";
-import SearchSection from "@/app/homePage/ivAi/components/SearchSection";
-import { UserInfo } from "@/app/homePage/ivAi/types/Create";
-import { IvAiItem } from "@/app/homePage/ivAi/types/List";
-import { useIvAiList } from "@/app/homePage/ivAi/hooks/useIvAiList";
+import {
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    useReactTable,
+} from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-export default function IvAiList(): React.ReactElement {
+export default function IvFaqList(): React.ReactElement {
     const PAGE_SIZE = 10;
     const router = useRouter();
 
     const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [kind, setKind] = useState<string>("AUTO7");
     const [isMobile, setIsMobile] = useState<boolean>(false);
     const [, setResetTrigger] = useState<boolean>(false);
 
     const keywordInput = useInput("", (value: string) => value.length <= 50);
     const keywordRef = useRef<HTMLInputElement>(null);
 
-    // React Query 사용
     const {
         data: queryData,
         isLoading,
         error,
         refetch,
-    } = useIvAiList({
+    } = useIvFaqList({
+        kind,
         keyword: keywordInput.value,
         currentPage,
         pageSize: PAGE_SIZE,
         enabled: true,
     });
 
-    // 데이터 추출
-    const ivAiLists = queryData?.data?.items || [];
+    const ivFaqLists = queryData?.data?.items || [];
     const totalCount = queryData?.data?.totalCount || 0;
 
     const validateKeyword = useAlert([
@@ -57,7 +58,6 @@ export default function IvAiList(): React.ReactElement {
         },
     ]);
 
-    // 에러 처리
     useEffect(() => {
         if (error) {
             console.error("API Error:", error);
@@ -65,15 +65,23 @@ export default function IvAiList(): React.ReactElement {
         }
     }, [error]);
 
-    // Tanstack Table 컬럼 정의
-    const columnHelper = createColumnHelper<IvAiItem>();
+    const columnHelper = createColumnHelper<IvFaqItem>();
 
     const columns = [
         columnHelper.accessor("RowNumber", {
             header: "번호",
             cell: (info) => <span className="text-[#0340E6] font-bold">{info.getValue()}</span>,
         }),
-        columnHelper.accessor("subject", {
+        columnHelper.accessor("kind", {
+            header: "솔루션",
+            cell: (info) => (
+                <span>
+                    {SOLUTION.find((solution) => solution.solutionCode === info.getValue())
+                        ?.solutionName || ""}
+                </span>
+            ),
+        }),
+        columnHelper.accessor("title", {
             header: "제목",
             cell: (info) => (
                 <span className="max-w-[680px] whitespace-nowrap overflow-hidden text-ellipsis block">
@@ -81,40 +89,14 @@ export default function IvAiList(): React.ReactElement {
                 </span>
             ),
         }),
-        columnHelper.accessor("writer", {
-            header: "작성자",
-            cell: (info) => info.getValue(),
-        }),
-        columnHelper.accessor("wdate", {
+        columnHelper.accessor("update_dt", {
             header: "작성일",
             cell: (info) => truncate(info.getValue(), 11),
         }),
     ];
 
-    // 모바일용 컬럼 정의
-    const mobileColumns = [
-        columnHelper.accessor((row) => row, {
-            id: "mobileView",
-            header: "",
-            cell: (info) => {
-                const row = info.getValue();
-                return (
-                    <div className="p-4">
-                        <div className="text-[#0340E6] font-semibold">{row.RowNumber}</div>
-                        <div className="pt-1 font-semibold text-ellipsis">{row.subject}</div>
-                        <div className="pt-1 flex justify-between">
-                            <div className="pt-1">{row.writer}</div>
-                            <div className="pt-1">{truncate(row.wdate, 11)}</div>
-                        </div>
-                    </div>
-                );
-            },
-        }),
-    ];
-
-    // Tanstack Table 생성
     const table = useReactTable({
-        data: ivAiLists,
+        data: ivFaqLists,
         columns: columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -157,6 +139,7 @@ export default function IvAiList(): React.ReactElement {
 
     const initClick = useCallback((): void => {
         keywordInput.setValue("");
+        setKind("AUTO7");
         if (currentPage !== 1) {
             setCurrentPage(1);
             return;
@@ -166,38 +149,50 @@ export default function IvAiList(): React.ReactElement {
     }, [keywordInput, currentPage, refetch]);
 
     const createClick = useCallback((): void => {
-        router.push("/homePage/ivAi/Create");
+        router.push("/homePage/ivFaq/Create");
         saveStateToSessionStorage({
-            ivAi: { keyword: keywordInput.value, page: currentPage },
+            ivFaq: { keyword: keywordInput.value, kind, page: currentPage },
         });
-    }, [router, keywordInput.value, currentPage]);
+    }, [router, keywordInput.value, kind, currentPage]);
 
-    const listItemClick = useCallback((serial: string): void => {
-        router.push(`/homePage/ivAi/Edit/${serial}`);
-        saveStateToSessionStorage({
-            ivAi: { keyword: keywordInput.value, page: currentPage },
-        });
-    });
+    const listItemClick = useCallback(
+        (serial: string): void => {
+            router.push(`/homePage/ivFaq/Edit/${serial}`);
+            saveStateToSessionStorage({
+                ivFaq: { keyword: keywordInput.value, kind, page: currentPage },
+            });
+        },
+        [router, keywordInput.value, kind, currentPage]
+    );
 
     const pageChange = useCallback((pageIndex: number): void => {
         setCurrentPage(pageIndex + 1);
     }, []);
 
-    // 모바일 감지
+    const handleKindChange = useCallback(
+        (e: React.ChangeEvent<HTMLSelectElement>): void => {
+            const newKind = e.target.value;
+            if (newKind !== kind) {
+                setKind(newKind);
+                if (currentPage !== 1) {
+                    setCurrentPage(1);
+                }
+            }
+        },
+        [kind, currentPage]
+    );
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);
         };
-
         handleResize();
         window.addEventListener("resize", handleResize);
-
         return () => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
 
-    // 초기화 및 상태 복원
     useEffect(() => {
         if (typeof window !== "undefined") {
             const tokenItem = localStorage.getItem("atKey");
@@ -206,12 +201,12 @@ export default function IvAiList(): React.ReactElement {
             if (payload) {
                 setUserInfo(payload);
             }
-
             const listStateItem = sessionStorage.getItem("listState");
             const listState = listStateItem ? JSON.parse(listStateItem) : null;
-            if (listState?.ivAi) {
-                keywordInput.setValue(listState.ivAi.keyword);
-                setCurrentPage(listState.ivAi.page);
+            if (listState?.ivFaq) {
+                keywordInput.setValue(listState.ivFaq.keyword);
+                setKind(listState.ivFaq.kind);
+                setCurrentPage(listState.ivFaq.page);
                 sessionStorage.removeItem("listState");
             } else {
                 setCurrentPage(1);
@@ -225,18 +220,18 @@ export default function IvAiList(): React.ReactElement {
         <div className="flex flex-col min-h-screen">
             <main className="w-full flex-grow">
                 <div className="max-w-6xl mx-auto pb-20">
-                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV AI Innovation</h2>
-
+                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 자주하는 질문</h2>
                     <SearchSection
                         keywordRef={keywordRef}
                         keywordValue={keywordInput.value}
+                        kindValue={kind}
                         onKeywordChange={keywordInput.onChange}
+                        onKindChange={handleKindChange}
                         onKeyPress={enterKeyPress}
                         onSearch={searchClick}
                         onReset={initClick}
                         loading={isLoading}
                     />
-
                     <div className="pt-5 pl-4 md:pt-5 md:pl-4">
                         <button
                             onClick={createClick}
@@ -245,9 +240,7 @@ export default function IvAiList(): React.ReactElement {
                             작성하기
                         </button>
                     </div>
-
                     <div className="mt-2 md:mt-4">
-                        {/* 데스크톱 테이블 */}
                         <div className="hidden md:block">
                             <div className="border border-[#E1E1E1] rounded-[5px]">
                                 <table className="w-full border-collapse">
@@ -265,10 +258,10 @@ export default function IvAiList(): React.ReactElement {
                                                             width:
                                                                 header.id === "RowNumber"
                                                                     ? "10%"
-                                                                    : header.id === "subject"
-                                                                    ? "60%"
-                                                                    : header.id === "writer"
+                                                                    : header.id === "kind"
                                                                     ? "10%"
+                                                                    : header.id === "title"
+                                                                    ? "60%"
                                                                     : "20%",
                                                         }}
                                                     >
@@ -321,8 +314,6 @@ export default function IvAiList(): React.ReactElement {
                                 </table>
                             </div>
                         </div>
-
-                        {/* 모바일 테이블 */}
                         <div className="md:hidden">
                             {isLoading ? (
                                 <MobileListItemLoader />
@@ -338,12 +329,18 @@ export default function IvAiList(): React.ReactElement {
                                                 {row.original.RowNumber}
                                             </div>
                                             <div className="pt-1 font-semibold text-ellipsis">
-                                                {row.original.subject}
+                                                {row.original.title}
                                             </div>
                                             <div className="pt-1 flex justify-between">
-                                                <div className="pt-1">{row.original.writer}</div>
                                                 <div className="pt-1">
-                                                    {truncate(row.original.wdate, 11)}
+                                                    {SOLUTION.find(
+                                                        (solution) =>
+                                                            solution.solutionCode ===
+                                                            row.original.kind
+                                                    )?.solutionName || ""}
+                                                </div>
+                                                <div className="pt-1">
+                                                    {truncate(row.original.update_dt, 11)}
                                                 </div>
                                             </div>
                                         </div>
@@ -354,7 +351,6 @@ export default function IvAiList(): React.ReactElement {
                             )}
                         </div>
                     </div>
-
                     <div className="py-5 md:block">
                         <Pagination
                             currentPage={table.getState().pagination.pageIndex}
