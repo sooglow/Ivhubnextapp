@@ -27,7 +27,7 @@ export default function IvAiList(): React.ReactElement {
     const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isMobile, setIsMobile] = useState<boolean>(false);
-    const [, setResetTrigger] = useState<boolean>(false);
+    const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     const keywordInput = useInput("", (value: string) => value.length <= 50);
     const keywordRef = useRef<HTMLInputElement>(null);
@@ -37,9 +37,8 @@ export default function IvAiList(): React.ReactElement {
         data: queryData,
         isLoading,
         error,
-        refetch,
     } = useIvAiList({
-        keyword: keywordInput.value,
+        keyword: searchKeyword,
         currentPage,
         pageSize: PAGE_SIZE,
         enabled: true,
@@ -137,14 +136,12 @@ export default function IvAiList(): React.ReactElement {
 
     const searchClick = useCallback((): void => {
         if (keywordInput.value === "" || validateKeyword()) {
+            setSearchKeyword(keywordInput.value);
             if (currentPage !== 1) {
                 setCurrentPage(1);
-                return;
             }
-            setResetTrigger((prev) => !prev);
-            refetch();
         }
-    }, [validateKeyword, currentPage, keywordInput.value, refetch]);
+    }, [validateKeyword, currentPage, keywordInput.value]);
 
     const enterKeyPress = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -157,13 +154,11 @@ export default function IvAiList(): React.ReactElement {
 
     const initClick = useCallback((): void => {
         keywordInput.setValue("");
+        setSearchKeyword("");
         if (currentPage !== 1) {
             setCurrentPage(1);
-            return;
         }
-        setResetTrigger((prev) => !prev);
-        refetch();
-    }, [keywordInput, currentPage, refetch]);
+    }, [keywordInput, currentPage]);
 
     const createClick = useCallback((): void => {
         router.push("/homePage/ivAi/Create");

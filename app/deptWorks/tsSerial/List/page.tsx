@@ -124,14 +124,12 @@ export default function TsSerialList() {
     const handleSearch = useCallback(() => {
         if (!validateKeyword()) return;
         setSearchKeyword(keywordInput.value);
-        refetch();
-    }, [validateKeyword, keywordInput.value, refetch]);
+    }, [validateKeyword, keywordInput.value]);
 
     const handleReset = useCallback(() => {
         keywordInput.setValue("");
         setSearchKeyword("");
-        refetch();
-    }, [keywordInput, refetch]);
+    }, [keywordInput]);
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {

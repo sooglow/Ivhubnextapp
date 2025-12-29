@@ -1,138 +1,85 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useInput } from "@/public/hooks/useInput";
+import { useIvUpgradeList } from "../hooks/useIvUpgradeList";
+import SearchSection from "../components/SearchSection";
+import ListItemLoader from "../components/ListItemLoader";
+import MobileListItemLoader from "../components/MobileListItemLoader";
+import { SOLUTION_MAPPING } from "@/public/constants/solution";
 import {
     useReactTable,
     getCoreRowModel,
-    getPaginationRowModel,
     flexRender,
     createColumnHelper,
 } from "@tanstack/react-table";
-import { useAlert } from "@/public/hooks/useAlert";
-import { useInput } from "@/public/hooks/useInput";
-import { parseJWT, saveStateToSessionStorage, truncate } from "@/public/utils/utils";
-import ListItemLoader from "@/app/homePage/ivInfo/components/ListItemLoader";
-import MobileListItemLoader from "@/app/homePage/ivInfo/components/MobileListItemLoader";
-import Pagination from "@/public/components/Pagination";
-import SearchSection from "@/app/homePage/ivInfo/components/SearchSection";
-import { UserInfo } from "@/app/homePage/ivInfo/types/Create";
-import { IvInfoItem } from "@/app/homePage/ivInfo/types/List";
-import { useIvInfoList } from "@/app/homePage/ivInfo/hooks/useIvInfoList";
+import type { UpgradeListItem } from "../types/List";
 
-export default function IvInfoList(): React.ReactElement {
-    const PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
+
+const columnHelper = createColumnHelper<UpgradeListItem>();
+
+export default function IvUpgradeList() {
     const router = useRouter();
-
-    const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
-
     const keywordInput = useInput("", (value: string) => value.length <= 50);
     const keywordRef = useRef<HTMLInputElement>(null);
 
-    // React Query 사용
-    const {
-        data: queryData,
-        isLoading,
-        error,
-    } = useIvInfoList({
+    const { data: queryData, isLoading, error } = useIvUpgradeList({
         keyword: searchKeyword,
         currentPage,
         pageSize: PAGE_SIZE,
         enabled: true,
     });
 
-    // 데이터 추출
-    const ivInfoLists = queryData?.data?.items || [];
+    const lists = queryData?.data?.items || [];
     const totalCount = queryData?.data?.totalCount || 0;
-
-    const validateKeyword = useAlert([
-        {
-            test: () => keywordInput.value.length === 0 || keywordInput.value.length >= 2,
-            message: "검색어는 2자 이상 입력해 주세요.",
-            ref: keywordRef,
-        },
-    ]);
-
-    // 에러 처리
-    useEffect(() => {
-        if (error) {
-            console.error("API Error:", error);
-            alert("데이터를 불러오는 중 오류가 발생했습니다.");
-        }
-    }, [error]);
-
-    // Tanstack Table 컬럼 정의
-    const columnHelper = createColumnHelper<IvInfoItem>();
 
     const columns = [
         columnHelper.accessor("RowNumber", {
             header: "번호",
-            cell: (info) => <span className="text-[#0340E6] font-bold">{info.getValue()}</span>,
-        }),
-        columnHelper.accessor("subject", {
-            header: "제목",
             cell: (info) => (
-                <span className="max-w-[680px] whitespace-nowrap overflow-hidden text-ellipsis block">
-                    {info.getValue()}
-                </span>
+                <div className="text-[#0340E6] font-bold">{info.getValue()}</div>
             ),
+        }),
+        columnHelper.accessor("prgName", {
+            header: "솔루션",
+            cell: (info) => (
+                <div className="whitespace-nowrap">
+                    {SOLUTION_MAPPING[info.getValue()] || info.getValue()}
+                </div>
+            ),
+        }),
+        columnHelper.accessor("title", {
+            header: "제목",
+            cell: (info) => <div className="whitespace-nowrap">{info.getValue()}</div>,
         }),
         columnHelper.accessor("writer", {
             header: "작성자",
-            cell: (info) => info.getValue(),
+            cell: (info) => <div className="whitespace-nowrap">{info.getValue()}</div>,
         }),
         columnHelper.accessor("wdate", {
             header: "작성일",
-            cell: (info) => truncate(info.getValue(), 11),
+            cell: (info) => <div className="whitespace-nowrap">{info.getValue()?.slice(0, 10)}</div>,
         }),
     ];
 
-    // 모바일용 컬럼 정의
-    const mobileColumns = [
-        columnHelper.accessor((row) => row, {
-            id: "mobileView",
-            header: "",
-            cell: (info) => {
-                const row = info.getValue();
-                return (
-                    <div className="p-4">
-                        <div className="text-[#0340E6] font-semibold">{row.RowNumber}</div>
-                        <div className="pt-1 font-semibold text-ellipsis">{row.subject}</div>
-                        <div className="pt-1 flex justify-between">
-                            <div className="pt-1">{row.writer}</div>
-                            <div className="pt-1">{truncate(row.wdate, 11)}</div>
-                        </div>
-                    </div>
-                );
-            },
-        }),
-    ];
-
-    // Tanstack Table 생성
     const table = useReactTable({
-        data: ivInfoLists,
-        columns: columns,
+        data: lists,
+        columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        manualPagination: true,
-        pageCount: Math.ceil(totalCount / PAGE_SIZE),
-        state: {
-            pagination: {
-                pageIndex: currentPage - 1,
-                pageSize: PAGE_SIZE,
-            },
-        },
-        onPaginationChange: (updater) => {
-            const newPagination =
-                typeof updater === "function"
-                    ? updater({ pageIndex: currentPage - 1, pageSize: PAGE_SIZE })
-                    : updater;
-            setCurrentPage(newPagination.pageIndex + 1);
-        },
     });
+
+    const validateKeyword = useCallback((): boolean => {
+        if (keywordInput.value.trim().length > 0 && keywordInput.value.trim().length < 2) {
+            alert("검색어는 2자 이상 입력해 주세요.");
+            keywordRef.current?.focus();
+            return false;
+        }
+        return true;
+    }, [keywordInput.value]);
 
     const searchClick = useCallback((): void => {
         if (keywordInput.value === "" || validateKeyword()) {
@@ -143,15 +90,6 @@ export default function IvInfoList(): React.ReactElement {
         }
     }, [validateKeyword, currentPage, keywordInput.value]);
 
-    const enterKeyPress = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>): void => {
-            if (e.key === "Enter") {
-                searchClick();
-            }
-        },
-        [searchClick]
-    );
-
     const initClick = useCallback((): void => {
         keywordInput.setValue("");
         setSearchKeyword("");
@@ -160,79 +98,82 @@ export default function IvInfoList(): React.ReactElement {
         }
     }, [keywordInput, currentPage]);
 
+    const handleKeyPress = useCallback(
+        (e: React.KeyboardEvent<HTMLInputElement>): void => {
+            if (e.key === "Enter") {
+                searchClick();
+            }
+        },
+        [searchClick]
+    );
+
     const createClick = useCallback((): void => {
-        router.push("/homePage/ivInfo/Create");
-        saveStateToSessionStorage({
-            ivInfo: { keyword: keywordInput.value, page: currentPage },
-        });
+        sessionStorage.setItem(
+            "listState",
+            JSON.stringify({
+                upgradeInfo: { keyword: keywordInput.value, page: currentPage },
+            })
+        );
+        router.push("/homePage/upgradeInfo/Create");
     }, [router, keywordInput.value, currentPage]);
 
-    const listItemClick = useCallback((serial: string): void => {
-        router.push(`/homePage/ivInfo/Edit/${serial}`);
-        saveStateToSessionStorage({
-            ivInfo: { keyword: keywordInput.value, page: currentPage },
-        });
-    });
+    const listItemClick = useCallback(
+        (serial: string): void => {
+            sessionStorage.setItem(
+                "listState",
+                JSON.stringify({
+                    upgradeInfo: { keyword: keywordInput.value, page: currentPage },
+                })
+            );
+            router.push(`/homePage/upgradeInfo/Edit/${serial}`);
+        },
+        [router, keywordInput.value, currentPage]
+    );
 
-    const pageChange = useCallback((pageIndex: number): void => {
-        setCurrentPage(pageIndex + 1);
-    }, []);
-
-    // 모바일 감지
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
-    // 초기화 및 상태 복원
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const tokenItem = localStorage.getItem("atKey");
-            const token = tokenItem ? JSON.parse(tokenItem)?.token : null;
-            const payload = parseJWT(token);
-            if (payload) {
-                setUserInfo(payload);
-            }
-
-            const listStateItem = sessionStorage.getItem("listState");
-            const listState = listStateItem ? JSON.parse(listStateItem) : null;
-            if (listState?.ivInfo) {
-                keywordInput.setValue(listState.ivInfo.keyword);
-                setCurrentPage(listState.ivInfo.page);
-                sessionStorage.removeItem("listState");
-            } else {
-                setCurrentPage(1);
-            }
-        }
+    const setPage = useCallback((page: number): void => {
+        setCurrentPage(page);
     }, []);
 
     const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col min-h-screen">
+                <main className="w-full flex-grow">
+                    <div className="max-w-6xl mx-auto pb-20">
+                        <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">
+                            IV 신규기능소개
+                        </h2>
+                        <div className="text-center py-10 text-red-500">
+                            에러가 발생했습니다: {error.message}
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col min-h-screen">
             <main className="w-full flex-grow">
                 <div className="max-w-6xl mx-auto pb-20">
-                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 공지사항</h2>
+                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 신규기능소개</h2>
 
                     <SearchSection
                         keywordRef={keywordRef}
                         keywordValue={keywordInput.value}
                         onKeywordChange={keywordInput.onChange}
-                        onKeyPress={enterKeyPress}
+                        onKeyPress={handleKeyPress}
                         onSearch={searchClick}
                         onReset={initClick}
                         loading={isLoading}
                     />
 
-                    <div className="pt-5 pl-4 md:pt-5 md:pl-4">
+                    <div className="pt-4 pl-4 md:pt-4 md:pl-4">
                         <button
                             onClick={createClick}
                             className="w-[115px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] md:w-[115px] md:h-10 cursor-pointer"
@@ -257,11 +198,13 @@ export default function IvInfoList(): React.ReactElement {
                                                             width:
                                                                 header.id === "RowNumber"
                                                                     ? "10%"
-                                                                    : header.id === "subject"
-                                                                    ? "60%"
+                                                                    : header.id === "prgName"
+                                                                    ? "20%"
+                                                                    : header.id === "title"
+                                                                    ? "20%"
                                                                     : header.id === "writer"
                                                                     ? "10%"
-                                                                    : "20%",
+                                                                    : "10%",
                                                         }}
                                                     >
                                                         {flexRender(
@@ -276,7 +219,7 @@ export default function IvInfoList(): React.ReactElement {
                                     <tbody>
                                         {isLoading ? (
                                             <tr>
-                                                <td colSpan={4}>
+                                                <td colSpan={5}>
                                                     <ListItemLoader />
                                                 </td>
                                             </tr>
@@ -302,7 +245,7 @@ export default function IvInfoList(): React.ReactElement {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={4} className="p-4 text-center">
+                                                <td colSpan={5} className="p-4 text-center text-[16px]">
                                                     결과가 없습니다.
                                                 </td>
                                             </tr>
@@ -322,35 +265,61 @@ export default function IvInfoList(): React.ReactElement {
                                         <div
                                             key={row.id}
                                             onClick={() => listItemClick(row.original.serial)}
-                                            className="border border-[#E1E1E1] rounded-[5px] mb-2 p-4 cursor-pointer hover:bg-slate-100"
+                                            className="border border-[#E1E1E1] rounded-[5px] mb-[14px] p-4 cursor-pointer hover:bg-slate-100"
                                         >
                                             <div className="text-[#0340E6] font-semibold">
                                                 {row.original.RowNumber}
                                             </div>
-                                            <div className="pt-1 font-semibold text-ellipsis">
-                                                {row.original.subject}
+                                            <div className="pt-1 font-semibold">
+                                                {SOLUTION_MAPPING[row.original.prgName] ||
+                                                    row.original.prgName}
+                                            </div>
+                                            <div className="pt-1 text-ellipsis">
+                                                {row.original.title}
                                             </div>
                                             <div className="pt-1 flex justify-between">
-                                                <div className="pt-1">{row.original.writer}</div>
-                                                <div className="pt-1">{truncate(row.original.wdate, 11)}</div>
+                                                <div>{row.original.writer}</div>
+                                                <div>{row.original.wdate?.slice(0, 10)}</div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="p-4">결과가 없습니다.</div>
+                                <div className="pl-2 pt-2 text-[16px]">결과가 없습니다.</div>
                             )}
                         </div>
                     </div>
 
-                    <div className="py-5 md:block">
-                        <Pagination
-                            currentPage={table.getState().pagination.pageIndex}
-                            totalPages={totalPages}
-                            onPageChange={pageChange}
-                            canPreviousPage={table.getCanPreviousPage()}
-                            canNextPage={table.getCanNextPage()}
-                        />
+                    <div className="py-5 flex justify-center">
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setPage(Math.max(1, currentPage - 1))}
+                                disabled={currentPage === 1}
+                                className="px-3 py-1 border rounded disabled:opacity-50"
+                            >
+                                이전
+                            </button>
+                            {pageNumbers.map((pageNum) => (
+                                <button
+                                    key={pageNum}
+                                    onClick={() => setPage(pageNum)}
+                                    className={`px-3 py-1 border rounded ${
+                                        currentPage === pageNum
+                                            ? "bg-[#A50A2E] text-white"
+                                            : "bg-white"
+                                    }`}
+                                >
+                                    {pageNum}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
+                                disabled={currentPage === totalPages}
+                                className="px-3 py-1 border rounded disabled:opacity-50"
+                            >
+                                다음
+                            </button>
+                        </div>
                     </div>
                 </div>
             </main>

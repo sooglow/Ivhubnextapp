@@ -12,15 +12,15 @@ import {
 import { useAlert } from "@/public/hooks/useAlert";
 import { useInput } from "@/public/hooks/useInput";
 import { parseJWT, saveStateToSessionStorage, truncate } from "@/public/utils/utils";
-import ListItemLoader from "@/app/homePage/ivInfo/components/ListItemLoader";
-import MobileListItemLoader from "@/app/homePage/ivInfo/components/MobileListItemLoader";
+import ListItemLoader from "@/app/homePage/ivIssue/components/ListItemLoader";
+import MobileListItemLoader from "@/app/homePage/ivIssue/components/MobileListItemLoader";
 import Pagination from "@/public/components/Pagination";
-import SearchSection from "@/app/homePage/ivInfo/components/SearchSection";
-import { UserInfo } from "@/app/homePage/ivInfo/types/Create";
-import { IvInfoItem } from "@/app/homePage/ivInfo/types/List";
-import { useIvInfoList } from "@/app/homePage/ivInfo/hooks/useIvInfoList";
+import SearchSection from "@/app/homePage/ivIssue/components/SearchSection";
+import { UserInfo } from "@/app/homePage/ivIssue/types/Create";
+import { IvIssueItem } from "@/app/homePage/ivIssue/types/List";
+import { useIvIssueList } from "@/app/homePage/ivIssue/hooks/useIvIssueList";
 
-export default function IvInfoList(): React.ReactElement {
+export default function IvIssueList(): React.ReactElement {
     const PAGE_SIZE = 10;
     const router = useRouter();
 
@@ -37,7 +37,7 @@ export default function IvInfoList(): React.ReactElement {
         data: queryData,
         isLoading,
         error,
-    } = useIvInfoList({
+    } = useIvIssueList({
         keyword: searchKeyword,
         currentPage,
         pageSize: PAGE_SIZE,
@@ -45,7 +45,7 @@ export default function IvInfoList(): React.ReactElement {
     });
 
     // 데이터 추출
-    const ivInfoLists = queryData?.data?.items || [];
+    const ivIssueLists = queryData?.data?.items || [];
     const totalCount = queryData?.data?.totalCount || 0;
 
     const validateKeyword = useAlert([
@@ -65,14 +65,14 @@ export default function IvInfoList(): React.ReactElement {
     }, [error]);
 
     // Tanstack Table 컬럼 정의
-    const columnHelper = createColumnHelper<IvInfoItem>();
+    const columnHelper = createColumnHelper<IvIssueItem>();
 
     const columns = [
         columnHelper.accessor("RowNumber", {
             header: "번호",
             cell: (info) => <span className="text-[#0340E6] font-bold">{info.getValue()}</span>,
         }),
-        columnHelper.accessor("subject", {
+        columnHelper.accessor("title", {
             header: "제목",
             cell: (info) => (
                 <span className="max-w-[680px] whitespace-nowrap overflow-hidden text-ellipsis block">
@@ -90,30 +90,9 @@ export default function IvInfoList(): React.ReactElement {
         }),
     ];
 
-    // 모바일용 컬럼 정의
-    const mobileColumns = [
-        columnHelper.accessor((row) => row, {
-            id: "mobileView",
-            header: "",
-            cell: (info) => {
-                const row = info.getValue();
-                return (
-                    <div className="p-4">
-                        <div className="text-[#0340E6] font-semibold">{row.RowNumber}</div>
-                        <div className="pt-1 font-semibold text-ellipsis">{row.subject}</div>
-                        <div className="pt-1 flex justify-between">
-                            <div className="pt-1">{row.writer}</div>
-                            <div className="pt-1">{truncate(row.wdate, 11)}</div>
-                        </div>
-                    </div>
-                );
-            },
-        }),
-    ];
-
     // Tanstack Table 생성
     const table = useReactTable({
-        data: ivInfoLists,
+        data: ivIssueLists,
         columns: columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -161,18 +140,21 @@ export default function IvInfoList(): React.ReactElement {
     }, [keywordInput, currentPage]);
 
     const createClick = useCallback((): void => {
-        router.push("/homePage/ivInfo/Create");
+        router.push("/homePage/ivIssue/Create");
         saveStateToSessionStorage({
-            ivInfo: { keyword: keywordInput.value, page: currentPage },
+            ivIssue: { keyword: keywordInput.value, page: currentPage },
         });
     }, [router, keywordInput.value, currentPage]);
 
-    const listItemClick = useCallback((serial: string): void => {
-        router.push(`/homePage/ivInfo/Edit/${serial}`);
-        saveStateToSessionStorage({
-            ivInfo: { keyword: keywordInput.value, page: currentPage },
-        });
-    });
+    const listItemClick = useCallback(
+        (serial: string): void => {
+            router.push(`/homePage/ivIssue/Edit/${serial}`);
+            saveStateToSessionStorage({
+                ivIssue: { keyword: keywordInput.value, page: currentPage },
+            });
+        },
+        [router, keywordInput.value, currentPage]
+    );
 
     const pageChange = useCallback((pageIndex: number): void => {
         setCurrentPage(pageIndex + 1);
@@ -204,9 +186,9 @@ export default function IvInfoList(): React.ReactElement {
 
             const listStateItem = sessionStorage.getItem("listState");
             const listState = listStateItem ? JSON.parse(listStateItem) : null;
-            if (listState?.ivInfo) {
-                keywordInput.setValue(listState.ivInfo.keyword);
-                setCurrentPage(listState.ivInfo.page);
+            if (listState?.ivIssue) {
+                keywordInput.setValue(listState.ivIssue.keyword);
+                setCurrentPage(listState.ivIssue.page);
                 sessionStorage.removeItem("listState");
             } else {
                 setCurrentPage(1);
@@ -220,7 +202,7 @@ export default function IvInfoList(): React.ReactElement {
         <div className="flex flex-col min-h-screen">
             <main className="w-full flex-grow">
                 <div className="max-w-6xl mx-auto pb-20">
-                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 공지사항</h2>
+                    <h2 className="pl-4 font-semibold text-2xl py-4 md:py-8">IV 업계이슈</h2>
 
                     <SearchSection
                         keywordRef={keywordRef}
@@ -232,7 +214,7 @@ export default function IvInfoList(): React.ReactElement {
                         loading={isLoading}
                     />
 
-                    <div className="pt-5 pl-4 md:pt-5 md:pl-4">
+                    <div className="pt-4 pl-4 md:pt-4 md:pl-4">
                         <button
                             onClick={createClick}
                             className="w-[115px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] md:w-[115px] md:h-10 cursor-pointer"
@@ -256,12 +238,12 @@ export default function IvInfoList(): React.ReactElement {
                                                         style={{
                                                             width:
                                                                 header.id === "RowNumber"
-                                                                    ? "10%"
-                                                                    : header.id === "subject"
-                                                                    ? "60%"
+                                                                    ? "15%"
+                                                                    : header.id === "title"
+                                                                    ? "45%"
                                                                     : header.id === "writer"
-                                                                    ? "10%"
-                                                                    : "20%",
+                                                                    ? "15%"
+                                                                    : "25%",
                                                         }}
                                                     >
                                                         {flexRender(
@@ -302,7 +284,7 @@ export default function IvInfoList(): React.ReactElement {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={4} className="p-4 text-center">
+                                                <td colSpan={4} className="p-4 text-center text-[16px]">
                                                     결과가 없습니다.
                                                 </td>
                                             </tr>
@@ -322,23 +304,23 @@ export default function IvInfoList(): React.ReactElement {
                                         <div
                                             key={row.id}
                                             onClick={() => listItemClick(row.original.serial)}
-                                            className="border border-[#E1E1E1] rounded-[5px] mb-2 p-4 cursor-pointer hover:bg-slate-100"
+                                            className="border border-[#E1E1E1] rounded-[5px] mb-[14px] p-4 cursor-pointer hover:bg-slate-100"
                                         >
                                             <div className="text-[#0340E6] font-semibold">
                                                 {row.original.RowNumber}
                                             </div>
                                             <div className="pt-1 font-semibold text-ellipsis">
-                                                {row.original.subject}
+                                                {row.original.title}
                                             </div>
                                             <div className="pt-1 flex justify-between">
                                                 <div className="pt-1">{row.original.writer}</div>
-                                                <div className="pt-1">{truncate(row.original.wdate, 11)}</div>
+                                                <div className="pt-1">{truncate(row.original.wdate, 12)}</div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="p-4">결과가 없습니다.</div>
+                                <div className="pl-2 pt-2 text-[16px]">결과가 없습니다.</div>
                             )}
                         </div>
                     </div>

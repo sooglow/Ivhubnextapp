@@ -29,7 +29,7 @@ export default function SolutionInfoList(): React.ReactElement {
   const [userInfo, setUserInfo] = useState<JWTPayload>({} as JWTPayload);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [, setResetTrigger] = useState<boolean>(false);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [preViewUrl, setPreViewUrl] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
@@ -41,9 +41,8 @@ export default function SolutionInfoList(): React.ReactElement {
     data: queryData,
     isLoading,
     error,
-    refetch,
   } = useSolutionInfoList({
-    keyword: keywordInput.value,
+    keyword: searchKeyword,
     currentPage,
     pageSize: PAGE_SIZE,
     enabled: isMounted,
@@ -138,14 +137,12 @@ export default function SolutionInfoList(): React.ReactElement {
 
   const searchClick = useCallback((): void => {
     if (keywordInput.value === "" || validateKeyword()) {
+      setSearchKeyword(keywordInput.value);
       if (currentPage !== 1) {
         setCurrentPage(1);
-        return;
       }
-      setResetTrigger((prev) => !prev);
-      refetch(); // 수동 refetch
     }
-  }, [validateKeyword, currentPage, keywordInput.value, refetch]);
+  }, [validateKeyword, currentPage, keywordInput.value]);
 
   const enterKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -158,13 +155,11 @@ export default function SolutionInfoList(): React.ReactElement {
 
   const initClick = useCallback((): void => {
     keywordInput.setValue("");
+    setSearchKeyword("");
     if (currentPage !== 1) {
       setCurrentPage(1);
-      return;
     }
-    setResetTrigger((prev) => !prev);
-    refetch(); // 수동 refetch
-  }, [keywordInput, currentPage, refetch]);
+  }, [keywordInput, currentPage]);
 
   const createClick = useCallback((): void => {
     router.push("/info/solutionInfo/Create");

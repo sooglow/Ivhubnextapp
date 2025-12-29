@@ -8,3 +8,23 @@ export const SOLUTION = [
     { solutionCode: "BIZ5", solutionName: "비즈5" },
     { solutionCode: "ETC", solutionName: "부가서비스" },
 ];
+
+// Upgrade Info 용 SOLUTION 상수
+export const SOLUTION_UPGRADE_INFO = [
+    { solutionCode: "AUTO7", solutionName: "AUTO7" },
+    { solutionCode: "AUTO6", solutionName: "AUTO6" },
+    { solutionCode: "AUTOSTOCK", solutionName: "재고" },
+    { solutionCode: "AUTOMANAGE", solutionName: "경영" },
+    { solutionCode: "AUTOCENTER", solutionName: "센터" },
+    { solutionCode: "AUTONET", solutionName: "AUTONET" },
+];
+
+// SOLUTION 매핑
+export const SOLUTION_MAPPING: Record<string, string> = {
+    AUTO7: "AUTO7",
+    AUTO6: "AUTO6",
+    AUTOSTOCK: "재고",
+    AUTOMANAGE: "경영",
+    AUTOCENTER: "센터",
+    AUTONET: "AUTONET",
+};

@@ -1,4 +1,4 @@
-import { FaqBoardProcedures } from "@/public/procedures/faqBoard";
+import { IssueBoardProcedures } from "@/public/procedures/issueBoard";
 import { NextRequest, NextResponse } from "next/server";
 
 // 상세 조회
@@ -9,7 +9,7 @@ export async function GET(
     try {
         const { serial } = await params;
 
-        const result = await FaqBoardProcedures.getFaqBoardView(serial);
+        const result = await IssueBoardProcedures.getIssueBoardView(serial);
 
         if (result.success) {
             const rawData = (result.data as any[]) || [];
@@ -27,10 +27,9 @@ export async function GET(
             const transformedData = {
                 serial: item.serial || "",
                 title: item.title || "",
-                kind: item.kind || "",
                 writer: item.writer || "",
-                update_dt: item.update_dt || "",
-                contents: item.contents || "",
+                wdate: item.wdate || "",
+                link: item.link || "",
             };
 
             return NextResponse.json({
@@ -67,7 +66,7 @@ export async function DELETE(
     try {
         const { serial } = await params;
 
-        const result = await FaqBoardProcedures.deleteFaqBoard(serial);
+        const result = await IssueBoardProcedures.deleteIssueBoard(serial);
 
         if (result.success) {
             // OUTPUT 파라미터 체크 (프로시저에서 반환한 @errmsg)

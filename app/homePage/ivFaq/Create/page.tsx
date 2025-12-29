@@ -136,7 +136,7 @@ export default function IvFaqCreate() {
                                 <button
                                     onClick={listClick}
                                     disabled={createMutation.isPending}
-                                    className="w-[155px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50"
+                                    className="w-[155px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer"
                                 >
                                     목록
                                 </button>
@@ -145,9 +145,9 @@ export default function IvFaqCreate() {
                                 <button
                                     onClick={createBtnClick}
                                     disabled={createMutation.isPending}
-                                    className="w-[155px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50"
+                                    className="w-[155px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer"
                                 >
-                                    {createMutation.isPending ? "저장 중..." : "저장"}
+                                    저장
                                 </button>
                             </div>
                         </div>

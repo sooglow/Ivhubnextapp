@@ -146,25 +146,13 @@ export default function IvFaqEdit({ params }: { params: Promise<{ serial: string
     useEffect(() => {
         if (typeof window !== "undefined") {
             const tokenItem = localStorage.getItem("atKey");
-            console.log("FAQ Edit - tokenItem:", tokenItem);
             const token = tokenItem ? JSON.parse(tokenItem)?.token : null;
-            console.log("FAQ Edit - token:", token);
             const payload = parseJWT(token);
-            console.log("FAQ Edit - payload:", payload);
-            console.log("FAQ Edit - userPower:", payload?.userPower);
-            console.log("FAQ Edit - userPower type:", typeof payload?.userPower);
-            console.log("FAQ Edit - userPower === '0':", payload?.userPower === "0");
             if (payload) {
                 setUserInfo(payload);
             }
         }
     }, []);
-
-    useEffect(() => {
-        console.log("FAQ Edit - userInfo state changed:", userInfo);
-        console.log("FAQ Edit - userInfo.userPower:", userInfo.userPower);
-        console.log("FAQ Edit - should show delete button:", userInfo.userPower === "0");
-    }, [userInfo]);
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -227,7 +215,7 @@ export default function IvFaqEdit({ params }: { params: Promise<{ serial: string
                                 <button
                                     onClick={cancelClick}
                                     disabled={updateMutation.isPending || deleteMutation.isPending}
-                                    className="w-[110px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50"
+                                    className="w-[110px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer"
                                 >
                                     취소
                                 </button>
@@ -237,10 +225,11 @@ export default function IvFaqEdit({ params }: { params: Promise<{ serial: string
                                     onClick={deleteClick}
                                     disabled={updateMutation.isPending || deleteMutation.isPending}
                                     className={`${
-                                        userInfo.userId === post.writer || userInfo.userPower === "0"
+                                        userInfo.userId === post.writer ||
+                                        userInfo.userPower === "0"
                                             ? ""
                                             : "hidden"
-                                    } w-[110px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50`}
+                                    } w-[110px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer`}
                                 >
                                     삭제
                                 </button>
@@ -249,7 +238,7 @@ export default function IvFaqEdit({ params }: { params: Promise<{ serial: string
                                 <button
                                     onClick={editBtnClick}
                                     disabled={updateMutation.isPending || deleteMutation.isPending}
-                                    className="w-[110px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50"
+                                    className="w-[110px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer"
                                 >
                                     저장
                                 </button>

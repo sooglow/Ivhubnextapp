@@ -47,7 +47,8 @@ export default function SalesHistList() {
     const [selectedActivity, setSelectedActivity] = useState<SalesActivityItem | null>(null);
     const [selectedInquiry, setSelectedInquiry] = useState<SalesInquiryItem | null>(null);
 
-    // 검색 input
+    // 검색 상태
+    const [searchKeyword, setSearchKeyword] = useState("");
     const keywordInput = useInput("", (value: string) => value.length <= 50);
 
     // React Query hooks
@@ -63,7 +64,7 @@ export default function SalesHistList() {
         userId: salesMan || userInfo.userId || "",
         saleDay1,
         saleDay2,
-        keyword: keywordInput.value,
+        keyword: searchKeyword,
         pageNumber: expandCurrentPage + 1, // API expects 1-based
         pageSize: 3,
     });
@@ -77,7 +78,7 @@ export default function SalesHistList() {
         userId: salesMan || userInfo.userId || "",
         saleDay1,
         saleDay2,
-        keyword: keywordInput.value,
+        keyword: searchKeyword,
         pageNumber: customerCurrentPage + 1, // API expects 1-based
         pageSize: 3,
     });
@@ -118,15 +119,15 @@ export default function SalesHistList() {
 
     // 검색 핸들러
     const handleSearch = () => {
+        setSearchKeyword(keywordInput.value);
         setExpandCurrentPage(0);
         setCustomerCurrentPage(0);
-        refetchExpand();
-        refetchCustomer();
     };
 
     // 초기화 핸들러
     const handleReset = () => {
         keywordInput.setValue("");
+        setSearchKeyword("");
 
         const newCurrentDate = new Date();
         const newThreeMonthsAgo = new Date(
