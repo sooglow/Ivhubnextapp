@@ -7,12 +7,13 @@ import { useIvUpgradeView } from "../../hooks/useIvUpgradeView";
 import { useUpdateUpgrade, useDeleteUpgrade } from "../../hooks/useIvUpgradeEdit";
 import { parseJWT } from "@/public/utils/utils";
 import { SOLUTION_UPGRADE_INFO } from "@/public/constants/solution";
-import EditFormLoader from "../../components/EditFormLoader";
+import { useLoading } from "@/public/contexts/LoadingContext";
 
 export default function IvUpgradeEdit() {
     const router = useRouter();
     const params = useParams();
     const serial = params.serial as string;
+    const { dispatch } = useLoading();
 
     const [userInfo, setUserInfo] = useState<any>({});
     const [post, setPost] = useState<any>({});
@@ -43,6 +44,11 @@ export default function IvUpgradeEdit() {
             }
         }
     }, []);
+
+    // 로딩 상태 관리
+    useEffect(() => {
+        dispatch({ type: "SET_LOADING", payload: isLoading });
+    }, [isLoading, dispatch]);
 
     useEffect(() => {
         if (viewData?.data) {
@@ -130,30 +136,11 @@ export default function IvUpgradeEdit() {
         });
     }, [serial, deleteMutation, router]);
 
-    if (isLoading) {
-        return (
-            <div className="flex flex-col min-h-screen">
-                <main className="w-full flex-grow p-4">
-                    <div className="max-w-6xl mx-auto md:px-4">
-                        <h2 className="md:pt-4 md:text-2xl font-semibold text-xl">
-                            IV 신규기능소개
-                        </h2>
-                        <div className="pt-4 md:pt-8">
-                            <EditFormLoader />
-                        </div>
-                    </div>
-                </main>
-            </div>
-        );
-    }
-
     return (
         <div className="flex flex-col min-h-screen">
             <main className="w-full flex-grow p-4">
                 <div className="max-w-6xl mx-auto md:px-4">
-                    <h2 className="md:pt-4 md:text-2xl font-semibold text-xl">
-                        IV 신규기능소개
-                    </h2>
+                    <h2 className="md:pt-4 md:text-2xl font-semibold text-xl">IV 신규기능소개</h2>
 
                     <div className="pt-4 md:pt-8 flex md:flex-row justify-between items-baseline">
                         <p>솔루션</p>
@@ -218,7 +205,7 @@ export default function IvUpgradeEdit() {
                         <div>
                             <button
                                 onClick={cancelClick}
-                                className="w-[110px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none"
+                                className="w-[110px] px-4 py-2 text-white bg-[#A50A2E] border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none cursor-pointer"
                             >
                                 목록
                             </button>
@@ -227,22 +214,22 @@ export default function IvUpgradeEdit() {
                             <button
                                 onClick={deleteClick}
                                 disabled={deleteMutation.isPending}
-                                className={`w-[110px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 ${
+                                className={`w-[110px] px-4 py-2 text-white bg-[#77829B] border border-slate-400 border-transparent shadow-sm rounded-md font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer ${
                                     userInfo.userId === post.writer || userInfo.userPower === "0"
                                         ? ""
                                         : "hidden"
                                 }`}
                             >
-                                {deleteMutation.isPending ? "삭제 중..." : "삭제"}
+                                삭제
                             </button>
                         </div>
                         <div className="pl-2">
                             <button
                                 onClick={editBtnClick}
                                 disabled={updateMutation.isPending}
-                                className="w-[110px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50"
+                                className="w-[110px] bg-[#77829B] text-white px-4 py-2 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 focus:outline-none disabled:opacity-50 cursor-pointer"
                             >
-                                {updateMutation.isPending ? "저장 중..." : "저장"}
+                                저장
                             </button>
                         </div>
                     </div>
