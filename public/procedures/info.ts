@@ -238,4 +238,36 @@ export class InfoProcedures extends BaseProcedures {
             };
         }
     }
+
+    //게시판 DELETE에 사용되는 프로시저
+    static async deleteInfo(
+        serial: string,
+        userid: string,
+        userPower: string
+    ): Promise<ProcedureResult<void>> {
+        if (typeof window !== "undefined") {
+            throw new Error("This function can only be called on the server side");
+        }
+
+        const sql = await import("mssql");
+
+        try {
+            const params = [
+                { name: "serial", type: sql.default.VarChar(10), value: serial },
+                { name: "userid", type: sql.default.VarChar(20), value: userid },
+                { name: "userPower", type: sql.default.VarChar(1), value: userPower },
+            ];
+
+            const result = await this.executeProc<void>("USP_CORE_INFO_D", params);
+
+            return result;
+        } catch (error) {
+            console.error("deleteInfo 오류:", error);
+            return {
+                success: false,
+                data: undefined,
+                error: error instanceof Error ? error.message : "알 수 없는 오류",
+            };
+        }
+    }
 }

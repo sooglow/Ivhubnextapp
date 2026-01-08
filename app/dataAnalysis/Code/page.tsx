@@ -5,7 +5,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, Suspense } from 'react'
 import { DataTable } from '@/components/comm/dataTable/DataTable'
 import { getBasicCarModelColumns, getVin5to11Columns } from '@/components/comm/dataTable/columns'
 import CodeInputForm from '../compenents/CodeInputForm'
@@ -18,7 +18,7 @@ import CodeSearchBar from '../compenents/CodeSearchBar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useSearchParams } from 'next/navigation'
 
-export default function Code() {
+function CodeContent() {
     const searchParams = useSearchParams();
     const vin11 = searchParams.get('vin11') || "";
     const [carFilter, setCarFilter] = useState([]);
@@ -39,8 +39,8 @@ export default function Code() {
         refetch: carFilterRefetch
     } = useQuery({
         queryKey: ['vinData'],
-        queryFn: () => fetchVinData(userInfo.userId),
-        enabled: !!userInfo?.userId,
+        queryFn: () => fetchVinData((userInfo as any).userId),
+        enabled: !!(userInfo as any)?.userId,
     });
 
     useEffect(() => {
@@ -70,8 +70,8 @@ export default function Code() {
         isLoading: carListIsLoading
     } = useQuery({
         queryKey: ['carListData', selectedSearchValue],
-        queryFn: () => fetchCarData(userInfo.userId, selectedSearchValue),
-        enabled: !!userInfo?.userId && (selectedSearchValue?.vin4?.length > 3 || !!selectedSearchValue?.iv_carcode)
+        queryFn: () => fetchCarData((userInfo as any).userId, selectedSearchValue),
+        enabled: !!(userInfo as any)?.userId && (selectedSearchValue?.vin4?.length > 3 || !!selectedSearchValue?.iv_carcode)
     });
 
     useEffect(() => {
@@ -88,7 +88,7 @@ export default function Code() {
 
     // 신규 차종 등록
     const mutationAddVin1to4 = useMutation({
-        mutationFn: (data: any) => addVin1to4(userInfo?.userId, data),
+        mutationFn: (data: any) => addVin1to4((userInfo as any)?.userId, data),
         onSuccess: () => {
             alert("신규 차종 추가 완료");
 
@@ -136,8 +136,8 @@ export default function Code() {
         isLoading: vin5to11ListIsLoading
     } = useQuery({
         queryKey: ['vin5to11Data', selectedVin1to4],
-        queryFn: () => fetchVin5to11(userInfo.userId, selectedVin1to4),
-        enabled: !!userInfo?.userId
+        queryFn: () => fetchVin5to11((userInfo as any).userId, selectedVin1to4),
+        enabled: !!(userInfo as any)?.userId
     });
 
     useEffect(() => {
@@ -152,7 +152,7 @@ export default function Code() {
 
     // 차대번호 5~11자리 코드 수정
     const mutationVin5to11 = useMutation({
-        mutationFn: (data: any) => updateVin5to11(userInfo?.userId, data),
+        mutationFn: (data: any) => updateVin5to11((userInfo as any)?.userId, data),
         onSuccess: () => {
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['vin5to11Data', selectedVin1to4] }).then(() => {
@@ -205,7 +205,7 @@ export default function Code() {
 
     // 선택차종 코드 복사
     const mutationCopyVin5to11 = useMutation({
-        mutationFn: (data: any) => copyVin5to11(userInfo?.userId, data),
+        mutationFn: (data: any) => copyVin5to11((userInfo as any)?.userId, data),
         onSuccess: () => {
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['vin5to11Data', selectedVin1to4] });
@@ -246,7 +246,7 @@ export default function Code() {
 
     // 선택 차종코드 초기화
     const mutationInitVin5to11 = useMutation({
-        mutationFn: (data: any) => initVin5to11(userInfo?.userId, data),
+        mutationFn: (data: any) => initVin5to11((userInfo as any)?.userId, data),
         onSuccess: () => {
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['vin5to11Data', selectedVin1to4] });
@@ -285,7 +285,7 @@ export default function Code() {
 
     // 선택 차종 차대번호 5~11 자리 코드 추가
     const mutationAddVin5to11 = useMutation({
-        mutationFn: (data: any) => addVin5to11(userInfo?.userId, data),
+        mutationFn: (data: any) => addVin5to11((userInfo as any)?.userId, data),
         onSuccess: () => {
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['vin5to11Data', selectedVin1to4] });
@@ -344,7 +344,7 @@ export default function Code() {
 
     //  차종 삭제
     const mutationDeleteVinCode = useMutation({
-        mutationFn: (data: any) => deleteVinCode(userInfo?.userId, data),
+        mutationFn: (data: any) => deleteVinCode((userInfo as any)?.userId, data),
         onSuccess: () => {
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['carListData', selectedSearchValue] })
@@ -387,7 +387,7 @@ export default function Code() {
 
     // 차대번호 코드 5~11자리 삭제
     const mutationDeleteVin5to11Code = useMutation({
-        mutationFn: (data: any) => deleteVin5to11Code(userInfo?.userId, data),
+        mutationFn: (data: any) => deleteVin5to11Code((userInfo as any)?.userId, data),
         onSuccess: () => {
             // 데이터 업데이트 성공 후 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['vin5to11Data', selectedVin1to4] })
@@ -436,7 +436,7 @@ export default function Code() {
 
     return (
         <ResizablePanelGroup
-            direction="horizontal"
+            orientation="horizontal"
             className="max-w-full rounded-lg border"
         >
             <ResizablePanel defaultSize={30} minSize={10}>
@@ -711,5 +711,13 @@ export default function Code() {
                 </div>
             </ResizablePanel>
         </ResizablePanelGroup >
+    )
+}
+
+export default function Code() {
+    return (
+        <Suspense fallback={<div>로딩중...</div>}>
+            <CodeContent />
+        </Suspense>
     )
 }

@@ -3,8 +3,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { getNewVinListColumns } from 'components/comm/dataTable/columns';
-import { DataTable } from 'components/comm/dataTable/DataTable';
+import { getNewVinListColumns } from '@/components/comm/dataTable/columns';
+import { DataTable } from '@/components/comm/dataTable/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNewVinList, getNewVinCountTypeBrand } from '../apis/CreateApis';
 import Pagenation from './Pagenation';

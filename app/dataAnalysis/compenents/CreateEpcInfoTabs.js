@@ -1,5 +1,5 @@
-import { getBasicEpcCodeColumns01, getBasicEpcCodeColumns02, getBasicEpcCodeColumns03, getBasicEpcCodeColumns04, getBasicEpcCodeColumns05, getBasicEpcCodeColumns06, getBasicEpcCodeColumns07 } from 'components/comm/dataTable/columns'
-import { DataTable } from 'components/comm/dataTable/DataTable'
+import { getBasicEpcCodeColumns01, getBasicEpcCodeColumns02, getBasicEpcCodeColumns03, getBasicEpcCodeColumns04, getBasicEpcCodeColumns05, getBasicEpcCodeColumns06, getBasicEpcCodeColumns07 } from '@/components/comm/dataTable/columns'
+import { DataTable } from '@/components/comm/dataTable/DataTable'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 

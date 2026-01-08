@@ -25,7 +25,7 @@ export async function DELETE(request: NextRequest, { params }: Props) {
             );
         }
 
-        const fileInfo = fileInfoResult.data[0];
+        const fileInfo = fileInfoResult.data[0] as any;
 
         // 2. 삭제할 파일명 확인 (C#의 filePath 로직과 동일)
         const fileName = fileNumber === 0 ? fileInfo.filename1 : fileInfo.filename2;

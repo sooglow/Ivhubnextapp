@@ -53,7 +53,7 @@ export default function AsCaseEdit({ params }: Props) {
         enabled: !!serial,
     });
 
-    const post = queryData?.data || null;
+    const post = (queryData as any)?.data || null;
 
     // 프로그램 코드 목록 조회
     const { data: prgData } = useQuery({
@@ -118,8 +118,8 @@ export default function AsCaseEdit({ params }: Props) {
         onSuccess: (data) => {
             if (data.result) {
                 alert("수정되었습니다.");
-                queryClient.invalidateQueries(["asCaseList"]);
-                queryClient.invalidateQueries(["asCaseView", serial]);
+                queryClient.invalidateQueries({ queryKey: ["asCaseList"] });
+                queryClient.invalidateQueries({ queryKey: ["asCaseView", serial] });
                 router.push(`/deptWorks/asCase/View/${serial}`);
             } else {
                 alert(data.errMsg || "수정에 실패했습니다.");
@@ -198,7 +198,7 @@ export default function AsCaseEdit({ params }: Props) {
             const token = tokenItem ? JSON.parse(tokenItem)?.token : null;
             const payload = parseJWT(token);
             if (payload) {
-                setUserInfo(payload);
+                setUserInfo(payload as any);
             }
         }
     }, []);

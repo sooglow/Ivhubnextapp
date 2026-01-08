@@ -1,6 +1,6 @@
 import { BaseProcedures, ProcedureResult } from "./index";
-import { IvInfoItem } from "@/app/homepage/ivInfo/types/List";
-import { IvInfoViewItem } from "@/app/homepage/ivInfo/types/View";
+import { IvInfoItem } from "@/app/homePage/ivInfo/types/List";
+import { IvInfoViewItem } from "@/app/homePage/ivInfo/types/View";
 
 export class IvBoardProcedures extends BaseProcedures {
   // 공지사항 목록 조회

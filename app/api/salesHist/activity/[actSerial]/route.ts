@@ -36,14 +36,15 @@ export async function GET(
             actSeqNo
         );
 
-        if (result.recordset.length === 0) {
+        const resultData = result.data as any;
+        if (!resultData || resultData.length === 0) {
             return NextResponse.json(
                 { result: false, errMsg: "데이터를 찾을 수 없습니다." },
                 { status: 404 }
             );
         }
 
-        const row = result.recordset[0];
+        const row = resultData[0];
 
         const data = {
             ivCode: row.ivcode?.trim() || "",
@@ -118,9 +119,10 @@ export async function POST(
         const result = await SalesHistProcedures.updateSalesActivity(data);
 
         // OUTPUT 파라미터로 전달된 에러 메시지 체크
-        if (result.output?.errmsg) {
+        const output = (result as any).output;
+        if (output?.errmsg) {
             return NextResponse.json(
-                { result: false, errMsg: result.output.errmsg },
+                { result: false, errMsg: output.errmsg },
                 { status: 400 }
             );
         }
@@ -190,9 +192,10 @@ export async function DELETE(
         const result = await SalesHistProcedures.updateSalesActivity(data);
 
         // OUTPUT 파라미터로 전달된 에러 메시지 체크
-        if (result.output?.errmsg) {
+        const output = (result as any).output;
+        if (output?.errmsg) {
             return NextResponse.json(
-                { result: false, errMsg: result.output.errmsg },
+                { result: false, errMsg: output.errmsg },
                 { status: 400 }
             );
         }

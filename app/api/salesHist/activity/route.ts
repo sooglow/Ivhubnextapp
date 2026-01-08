@@ -119,9 +119,10 @@ export async function POST(request: NextRequest) {
         const result = await SalesHistProcedures.createSalesActivity(data);
 
         // OUTPUT 파라미터로 전달된 에러 메시지 체크
-        if (result.output?.errmsg) {
+        const output = (result as any).output;
+        if (output?.errmsg) {
             return NextResponse.json(
-                { result: false, errMsg: result.output.errmsg },
+                { result: false, errMsg: output.errmsg },
                 { status: 400 }
             );
         }

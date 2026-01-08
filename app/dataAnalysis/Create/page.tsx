@@ -170,7 +170,7 @@ export default function Create() {
             vinValueTypeCode?.vin14_text,
         ],
         queryFn: () =>
-            fetchCarTypeData(userInfo.userId, {
+            fetchCarTypeData((userInfo as any)?.userId, {
                 vin14: inputValue?.vin?.slice(0, 4),
                 vin: inputValue?.vin,
             }),
@@ -218,12 +218,12 @@ export default function Create() {
     } = useQuery({
         queryKey: ["vin5to11", vinValueTypeCode?.vin14_text, vinValueTypeCode?.vin14],
         queryFn: () =>
-            fetchVin5to11Data(userInfo.userId, {
+            fetchVin5to11Data((userInfo as any)?.userId, {
                 vin14: vinValueTypeCode?.vin14,
                 vin14Text: vinValueTypeCode?.vin14_text,
             }),
         enabled:
-            !!userInfo?.userId &&
+            !!(userInfo as any)?.userId &&
             !!vinValueTypeCode?.vin14_text &&
             vinValueTypeCode?.vin14?.length === 4,
     });
@@ -247,12 +247,12 @@ export default function Create() {
     } = useQuery({
         queryKey: ["epcCode", inputValue?.vin, vinValueTypeCode?.epc_code],
         queryFn: () =>
-            fetchEpcExpData(userInfo.userId, {
+            fetchEpcExpData((userInfo as any)?.userId, {
                 vin: inputValue?.vin,
                 epccode: vinValueTypeCode?.epc_code,
             }),
         enabled:
-            !!userInfo?.userId && inputValue?.vin?.length === 11 && !!vinValueTypeCode?.epc_code,
+            !!(userInfo as any)?.userId && inputValue?.vin?.length === 11 && !!vinValueTypeCode?.epc_code,
         refetchOnWindowFocus: false,
     });
 
@@ -498,7 +498,7 @@ export default function Create() {
 
     // 데이터 저장
     const mutationVinAnalysisData = useMutation({
-        mutationFn: (data: any) => insertVinAnalysisData(userInfo?.userId, data),
+        mutationFn: (data: any) => insertVinAnalysisData((userInfo as any)?.userId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["carType", inputValue?.vin, inputValue?.vin?.slice(0, 4)],
@@ -602,7 +602,7 @@ export default function Create() {
 
     // 신규 차대번호 분석 시작
     const mutationNewVinAnalysisStart = useMutation({
-        mutationFn: (data: any) => updateNewVinAnaysis(userInfo?.userId, data),
+        mutationFn: (data: any) => updateNewVinAnaysis((userInfo as any)?.userId, data),
         onSuccess: (res: any) => {
             startAnalysis(res.vin11);
         },
@@ -623,7 +623,7 @@ export default function Create() {
 
     // 차대번호 기초코드 추가
     const mutationAddVinCode = useMutation({
-        mutationFn: (data: any) => addVinCode(userInfo?.userId, data),
+        mutationFn: (data: any) => addVinCode((userInfo as any)?.userId, data),
         onSuccess: (res: any) => {
             vin5to11Refetch();
         },
@@ -663,7 +663,7 @@ export default function Create() {
 
     // 신규 차대번호 분석 제외
     const mutationDeleteNewVin = useMutation({
-        mutationFn: (data: any) => deleteNewVin(userInfo?.userId, data),
+        mutationFn: (data: any) => deleteNewVin((userInfo as any)?.userId, data),
         onSuccess: (res: any) => {
             setReloadTrigger((prev) => !prev);
         },
@@ -742,7 +742,7 @@ export default function Create() {
 
     return (
         <div className="flex flex-col">
-            <ResizablePanelGroup direction="horizontal" className="max-w-full rounded-lg border">
+            <ResizablePanelGroup orientation="horizontal" className="max-w-full rounded-lg border">
                 <ResizablePanel defaultSize={40} minSize={20}>
                     <div className="flex justify-center p-6 overflow-auto">
                         <Card className="w-full">

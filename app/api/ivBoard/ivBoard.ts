@@ -1,5 +1,5 @@
-import { IvInfoListResponse } from "@/app/homepage/ivInfo/types/List";
-import { IvInfoViewResponse } from "@/app/homepage/ivInfo/types/View";
+import { IvInfoListResponse } from "@/app/homePage/ivInfo/types/List";
+import { IvInfoViewResponse } from "@/app/homePage/ivInfo/types/View";
 
 export async function getIvBoardList(
     keyword: string,

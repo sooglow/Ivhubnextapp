@@ -46,8 +46,8 @@ export default function View() {
         isLoading: carFilterIsLoading,
     } = useQuery({
         queryKey: ["carFilterData"],
-        queryFn: () => fetchVinData(userInfo.userId),
-        enabled: !!userInfo?.userId,
+        queryFn: () => fetchVinData((userInfo as any)?.userId),
+        enabled: !!(userInfo as any)?.userId,
     });
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function View() {
     } = useQuery({
         queryKey: ["vinList", currentPage, selectedCarcode, keyword],
         queryFn: () =>
-            fetchVinList(userInfo.userId, {
+            fetchVinList((userInfo as any)?.userId, {
                 iv_carcode: selectedCarcode.iv_carcode,
                 keyword: keyword.length === 11 ? keyword : "",
                 currentPage,
@@ -134,11 +134,11 @@ export default function View() {
     } = useQuery({
         queryKey: ["epcList", selectedVin, selectedIvCode],
         queryFn: () =>
-            fetchEpcExpList(userInfo.userId, {
+            fetchEpcExpList((userInfo as any)?.userId, {
                 vin: selectedVin,
                 iv_carcode: selectedIvCode,
             }),
-        enabled: !!userInfo.userId && !!selectedVin,
+        enabled: !!(userInfo as any)?.userId && !!selectedVin,
     });
 
     useEffect(() => {
@@ -161,10 +161,10 @@ export default function View() {
     } = useQuery({
         queryKey: ["sampleVin17List", selectedVin],
         queryFn: () =>
-            fetchSampleVin17List(userInfo.userId, {
+            fetchSampleVin17List((userInfo as any)?.userId, {
                 vin11: selectedVin,
             }),
-        enabled: !!userInfo.userId && !!selectedVin && !!selectedIvCode,
+        enabled: !!(userInfo as any)?.userId && !!selectedVin && !!selectedIvCode,
     });
 
     useEffect(() => {
@@ -193,7 +193,7 @@ export default function View() {
     };
 
     const mutationRemoveVinData = useMutation({
-        mutationFn: (data: any) => removeVinData(userInfo?.userId, data),
+        mutationFn: (data: any) => removeVinData((userInfo as any)?.userId, data),
         onSuccess: (res: any) => {
             epcListRefetch();
         },

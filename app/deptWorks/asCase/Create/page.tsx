@@ -6,9 +6,14 @@ import { useInput } from "@/public/hooks/useInput";
 import { useAlert } from "@/public/hooks/useAlert";
 import { parseJWT } from "@/public/utils/utils";
 import { UserInfo } from "@/app/deptWorks/asCase/types/Create";
-import TextEditor from "@/public/components/TextEditor";
+import dynamic from "next/dynamic";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createAsCase } from "@/app/api/asCase/asCase";
+
+const TextEditor = dynamic(() => import("@/public/components/TextEditor"), {
+    ssr: false,
+    loading: () => <div>에디터 로딩중...</div>,
+});
 
 export default function AsCaseCreate() {
     const router = useRouter();
@@ -74,7 +79,7 @@ export default function AsCaseCreate() {
         onSuccess: (data) => {
             if (data.result) {
                 alert("저장되었습니다.");
-                queryClient.invalidateQueries(["asCaseList"]);
+                queryClient.invalidateQueries({ queryKey: ["asCaseList"] });
                 router.push("/deptWorks/asCase/List");
                 router.refresh();
             } else {
@@ -129,7 +134,7 @@ export default function AsCaseCreate() {
             const token = tokenItem ? JSON.parse(tokenItem)?.token : null;
             const payload = parseJWT(token);
             if (payload) {
-                setUserInfo(payload);
+                setUserInfo(payload as any);
             }
         }
     }, []);

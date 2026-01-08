@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getBasicCarModelNotContextColumns, getBasicVinCodeColumns } from 'components/comm/dataTable/columns';
-import { DataTable } from 'components/comm/dataTable/DataTable';
+import { getBasicCarModelNotContextColumns, getBasicVinCodeColumns } from '@/components/comm/dataTable/columns';
+import { DataTable } from '@/components/comm/dataTable/DataTable';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CreateAddVinCode from './CreateAddVinCode';
 

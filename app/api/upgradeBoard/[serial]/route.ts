@@ -72,11 +72,12 @@ export async function DELETE(
 
         if (result.success) {
             // OUTPUT 파라미터 체크 (프로시저에서 반환한 @errmsg)
-            if (result.output && result.output.errmsg) {
+            const output = (result as any).output;
+            if (output && output.errmsg) {
                 return NextResponse.json({
                     result: false,
                     data: null,
-                    errMsg: result.output.errmsg,
+                    errMsg: output.errmsg,
                 });
             }
 

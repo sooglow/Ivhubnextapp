@@ -197,7 +197,11 @@ export default function InnoAnalyticsView() {
         datasets: [
             {
                 label: "건수",
-                data: asData.itemsC?.map((item) => ({ x: translateDayToKorean(item.x), y: item.y })) || [],
+                data:
+                    asData.itemsC?.map((item) => ({
+                        x: translateDayToKorean(item.x),
+                        y: item.y,
+                    })) || [],
                 borderColor: "rgb(255, 99, 132)",
                 backgroundColor: "#A50A2E",
             },

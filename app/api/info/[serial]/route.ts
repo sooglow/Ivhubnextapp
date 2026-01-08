@@ -28,7 +28,7 @@ export async function GET(
         const result = await InfoProcedures.getInfoView(serial, userid);
 
         if (result.success) {
-            const rawData = (result.data as InfoViewItem[]) || [];
+            const rawData = (result.data as any) || [];
 
             if (rawData.length === 0) {
                 return NextResponse.json({
@@ -46,8 +46,8 @@ export async function GET(
                 writer: item.writer?.toString() || "",
                 visited: parseInt(item.visited?.toString() || "0"),
                 wdate:
-                    item.wdate instanceof Date
-                        ? item.wdate.toISOString().slice(0, 19).replace("T", " ")
+                    (item.wdate as any) instanceof Date
+                        ? (item.wdate as Date).toISOString().slice(0, 19).replace("T", " ")
                         : item.wdate?.toString() || "",
                 filename1: item.filename1?.toString() || "",
                 filename2: item.filename2?.toString() || "",
