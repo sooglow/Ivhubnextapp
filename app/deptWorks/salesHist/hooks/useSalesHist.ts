@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import {
     SalesInquiryListResponse,
     UpdateSalesStateRequest,
@@ -12,20 +12,12 @@ import {
     SalesActivityResponse,
 } from "../types/Activity";
 
-// Authorization 헤더 생성 헬퍼 함수
-const getAuthHeaders = () => {
-    const token = JSON.parse(localStorage.getItem("atKey") || "{}")?.token;
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
 // 1. 영업문의 최근 50개 목록 조회
 export const useSalesInquiryList = () => {
     return useQuery<SalesInquiryListResponse>({
         queryKey: ["salesInquiryList"],
         queryFn: async () => {
-            const response = await axios.get<SalesInquiryListResponse>("/api/salesHist", {
-                headers: getAuthHeaders(),
-            });
+            const response = await axiosInstance.get<SalesInquiryListResponse>("/api/salesHist");
             return response.data;
         },
     });
@@ -37,9 +29,7 @@ export const useUpdateSalesState = () => {
 
     return useMutation<UpdateSalesStateResponse, Error, UpdateSalesStateRequest>({
         mutationFn: async (data: UpdateSalesStateRequest) => {
-            const response = await axios.post<UpdateSalesStateResponse>("/api/sales", data, {
-                headers: getAuthHeaders(),
-            });
+            const response = await axiosInstance.post<UpdateSalesStateResponse>("/api/sales", data);
             return response.data;
         },
         onSuccess: () => {
@@ -82,9 +72,8 @@ export const useExpandActivityList = (params: {
                 PageSize: pageSize.toString(),
             });
 
-            const response = await axios.get<SalesActivityListResponse>(
-                `/api/salesHist/activity?${searchParams.toString()}`,
-                { headers: getAuthHeaders() }
+            const response = await axiosInstance.get<SalesActivityListResponse>(
+                `/api/salesHist/activity?${searchParams.toString()}`
             );
             return response.data;
         },
@@ -126,9 +115,8 @@ export const useCustomerActivityList = (params: {
                 PageSize: pageSize.toString(),
             });
 
-            const response = await axios.get<SalesActivityListResponse>(
-                `/api/salesHist/activity?${searchParams.toString()}`,
-                { headers: getAuthHeaders() }
+            const response = await axiosInstance.get<SalesActivityListResponse>(
+                `/api/salesHist/activity?${searchParams.toString()}`
             );
             return response.data;
         },
@@ -142,10 +130,9 @@ export const useCreateSalesActivity = () => {
 
     return useMutation<SalesActivityResponse, Error, CreateSalesActivityRequest>({
         mutationFn: async (data: CreateSalesActivityRequest) => {
-            const response = await axios.post<SalesActivityResponse>(
+            const response = await axiosInstance.post<SalesActivityResponse>(
                 "/api/salesHist/activity",
-                data,
-                { headers: getAuthHeaders() }
+                data
             );
             return response.data;
         },
@@ -162,10 +149,9 @@ export const useUpdateSalesActivity = (actSerial: string) => {
 
     return useMutation<SalesActivityResponse, Error, UpdateSalesActivityRequest>({
         mutationFn: async (data: UpdateSalesActivityRequest) => {
-            const response = await axios.post<SalesActivityResponse>(
+            const response = await axiosInstance.post<SalesActivityResponse>(
                 `/api/salesHist/activity/${actSerial}`,
-                data,
-                { headers: getAuthHeaders() }
+                data
             );
             return response.data;
         },
@@ -182,9 +168,9 @@ export const useDeleteSalesActivity = (actSerial: string) => {
 
     return useMutation<SalesActivityResponse, Error, UpdateSalesActivityRequest>({
         mutationFn: async (data: UpdateSalesActivityRequest) => {
-            const response = await axios.delete<SalesActivityResponse>(
+            const response = await axiosInstance.delete<SalesActivityResponse>(
                 `/api/salesHist/activity/${actSerial}`,
-                { data, headers: getAuthHeaders() }
+                { data }
             );
             return response.data;
         },

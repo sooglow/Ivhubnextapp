@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ShopProcedures } from "@/public/procedures/shop";
 
+// 서버사이드 JWT 파싱 함수
+function parseJWTServer(token: string | null): { areaCode: string } | null {
+  if (!token) return null;
+
+  try {
+    // Bearer 제거
+    const actualToken = token.startsWith("Bearer ") ? token.slice(7) : token;
+    const base64Url = actualToken.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = Buffer.from(base64, "base64").toString("utf-8");
+    const payload = JSON.parse(jsonPayload);
+
+    return {
+      areaCode: payload.AreaCode || "",
+    };
+  } catch (e) {
+    console.error("Error parsing JWT:", e);
+    return null;
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -9,7 +30,17 @@ export async function GET(request: NextRequest) {
     const pageNumber = parseInt(searchParams.get("pageNumber") || "1");
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
     const prgCode = searchParams.get("PrgCode") || null;
-    const areaCode = searchParams.get("AreaCode") || null;
+    let areaCode = searchParams.get("AreaCode") || null;
+
+    // JWT에서 사용자 지사코드 추출
+    const authHeader = request.headers.get("authorization");
+    const userInfo = parseJWTServer(authHeader);
+    const userAreaCode = userInfo?.areaCode || "";
+
+    // C# 백엔드 로직: 본사(30000)가 아니면 사용자의 지사코드를 강제 사용
+    if (userAreaCode && userAreaCode !== "30000") {
+      areaCode = userAreaCode;
+    }
 
     const result = await ShopProcedures.getShopList(
       keyword,

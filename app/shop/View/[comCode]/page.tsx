@@ -17,14 +17,14 @@ interface Props {
 
 export default function ShopView({ params }: Props) {
     const router = useRouter();
-    const { state, dispatch } = useLoading();
+    const { dispatch } = useLoading();
     const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
     const [comCode, setComCode] = useState<string>("");
     const [tabIndex, setTabIndex] = useState(0);
     const [menuIndex, setMenuIndex] = useState(0);
 
     // React Query로 데이터 조회
-    const { data: queryData, isLoading, error } = useShopView(comCode);
+    const { data: queryData, isLoading } = useShopView(comCode);
     const shopDetail = queryData?.data || null;
     const shop = shopDetail?.comInfo || null;
 
@@ -135,7 +135,6 @@ export default function ShopView({ params }: Props) {
     useEffect(() => {
         dispatch({ type: "SET_LOADING", payload: isLoading });
 
-        // 클린업: 컴포넌트 언마운트 시 loading false로 리셋
         return () => {
             dispatch({ type: "SET_LOADING", payload: false });
         };

@@ -8,7 +8,7 @@ import { useAlert } from "@/public/hooks/useAlert";
 import { parseJWT } from "@/public/utils/utils";
 import { JWTPayload } from "@/public/types/user";
 import { useLoading } from "@/public/contexts/LoadingContext";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 interface Props {
   params: Promise<{ num: string }>;
@@ -62,7 +62,7 @@ export default function SolutionInfoEdit({ params }: Props) {
     dispatch({ type: "SET_LOADING", payload: true });
 
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `/api/solutionInfo/${num}`,
         {
           num: parseInt(num),
@@ -112,7 +112,7 @@ export default function SolutionInfoEdit({ params }: Props) {
     dispatch({ type: "SET_LOADING", payload: true });
 
     try {
-      const response = await axios.delete(`/api/solutionInfo/${num}`);
+      const response = await axiosInstance.delete(`/api/solutionInfo/${num}`);
 
       if (response.data.result) {
         await queryClient.invalidateQueries({ queryKey: ["solutionInfoList"] });
@@ -163,7 +163,7 @@ export default function SolutionInfoEdit({ params }: Props) {
     const fetchData = async () => {
       dispatch({ type: "SET_LOADING", payload: true });
       try {
-        const response = await axios.get(`/api/solutionInfo/${num}`);
+        const response = await axiosInstance.get(`/api/solutionInfo/${num}`);
 
         if (!response.data.result || !response.data.data) {
           alert(response.data.errMsg || "데이터를 불러올 수 없습니다.");

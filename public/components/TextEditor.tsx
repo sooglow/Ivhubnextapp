@@ -2,8 +2,7 @@
 import React from "react";
 import Editor from "@/public/lib/ckeditor5/build/ckeditor";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import axios from "axios";
-import { logOutProc } from "@/public/utils/utils";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 function TextEditor({
     data,
@@ -54,23 +53,15 @@ function TextEditor({
         return {
             upload: () => {
                 return loader.file.then((file: any) => {
-                    const tokenInfo = JSON.parse(localStorage.getItem("atKey") || "{}");
-                    if (!tokenInfo) {
-                        logOutProc();
-                        return;
-                    }
                     const data = new FormData();
                     data.append("file", file);
 
-                    return axios({
-                        url: process.env.REACT_APP_API_URL + "/File/upload",
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${tokenInfo.token}`, // 토큰
-                            "Content-Type": "multipart/form-data",
-                        },
-                        data: data,
-                    })
+                    return axiosInstance
+                        .post(process.env.NEXT_PUBLIC_API_URL + "/File/upload", data, {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        })
                         .then((response) => {
                             if (response.data.fileUrl) {
                                 return {

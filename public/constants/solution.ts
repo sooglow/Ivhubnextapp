@@ -27,4 +27,9 @@ export const SOLUTION_MAPPING: Record<string, string> = {
     AUTOMANAGE: "경영",
     AUTOCENTER: "센터",
     AUTONET: "AUTONET",
+    "01": "하이웨이",
+    "02": "하이퀵",
+    "03": "하이픽",
+    "04": "하이콜",
+    "05": "하이원",
 };

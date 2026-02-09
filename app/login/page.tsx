@@ -173,7 +173,7 @@ export default function LoginPage() {
                 <ul className="space-y-2 w-[328px]">
                   <li>
                     <input
-                      ref={smsCodeRef}
+                      ref={smsCodeRef}  
                       placeholder="인증번호"
                       type="password"
                       className="bg-white w-full h-12 border border-[#E1E1E1] rounded-md py-2 pl-4 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"

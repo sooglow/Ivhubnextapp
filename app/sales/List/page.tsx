@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ListItemLoader from "@/app/shop/components/ListItemLoader";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 export default function SalesList(): React.ReactElement {
     const PAGE_SIZE = 10;
@@ -172,9 +173,29 @@ export default function SalesList(): React.ReactElement {
         });
     };
 
-    const handleExcel = () => {
-        alert("엑셀 다운로드 기능은 추후 구현 예정입니다.");
-    };
+    // 엑셀 내보내기
+    const handleExcel = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/Sales/ExportXls?PrgCode=${prgCode}&AreaCode=${areaCode}&SalesMan=${salesMan}&State=${state}&Keyword=${keywordInput.value}`,
+                {
+                    responseType: "blob",
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "SalesList.zip");
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("엑셀 내보내기 오류:", error);
+            alert("엑셀 내보내기에 실패했습니다.");
+        }
+    }, [prgCode, areaCode, salesMan, state, keywordInput.value]);
 
     // 지사 변경 시 담당자 초기화
     useEffect(() => {
@@ -237,8 +258,18 @@ export default function SalesList(): React.ReactElement {
                         showAreaFilter={isAdmin}
                     />
 
+                    {/* 엑셀 내보내기 버튼 */}
+                    <div className="flex justify-start mt-2 md:mt-4 px-4 md:px-0 md:pl-4">
+                        <button
+                            onClick={handleExcel}
+                            className="w-[115px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] md:w-[115px] md:h-10 cursor-pointer"
+                        >
+                            엑셀 내보내기
+                        </button>
+                    </div>
+
                     {/* 테이블 */}
-                    <div className="mt-2 md:mt-0">
+                    <div className="mt-2 md:mt-4">
                         <table className="table-auto w-full border-separate border-spacing-[14px] rounded md:border-spacing-0 md:border-[#E1E1E1] md:rounded-[5px] md:border">
                             <thead className="hidden md:table-header-group">
                                 {table.getHeaderGroups().map((headerGroup) => (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useInput } from "@/public/hooks/useInput";
 import { useTsSerialUpdate } from "../hooks/useTsSerial";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 interface UpdateTsSerialListProps {
     list: any;
@@ -59,7 +59,7 @@ function UpdateTsSerialList({ list, open, setOpen }: UpdateTsSerialListProps) {
     useEffect(() => {
         const fetchAreaItems = async () => {
             try {
-                const response = await axios.get("/api/code?Kind=areacode");
+                const response = await axiosInstance.get("/api/code?Kind=areacode");
                 if (response.data.result) {
                     setAreaItems(response.data.data.items || []);
                 }
@@ -75,7 +75,7 @@ function UpdateTsSerialList({ list, open, setOpen }: UpdateTsSerialListProps) {
     useEffect(() => {
         const fetchManItems = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     `/api/code?Kind=mancode&SubCode=${salesArea}`
                 );
                 if (response.data.result) {

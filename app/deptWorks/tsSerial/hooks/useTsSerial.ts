@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import { TsSerialListResponse } from "../types/List";
 import { TsSerialViewResponse } from "../types/View";
 import { TsSerialUpdateRequest, TsSerialUpdateResponse } from "../types/Edit";
@@ -10,7 +10,7 @@ export const useTsSerialList = (keyword: string = "") => {
     return useQuery<TsSerialListResponse>({
         queryKey: ["tsSerialList", keyword],
         queryFn: async () => {
-            const response = await axios.get<TsSerialListResponse>(
+            const response = await axiosInstance.get<TsSerialListResponse>(
                 `/api/tsSerial?keyword=${keyword}`
             );
             return response.data;
@@ -23,7 +23,7 @@ export const useTsSerialView = (serial: string) => {
     return useQuery<TsSerialViewResponse>({
         queryKey: ["tsSerialView", serial],
         queryFn: async () => {
-            const response = await axios.get<TsSerialViewResponse>(`/api/tsSerial/${serial}`);
+            const response = await axiosInstance.get<TsSerialViewResponse>(`/api/tsSerial/${serial}`);
             return response.data;
         },
         enabled: !!serial,
@@ -36,7 +36,7 @@ export const useTsSerialCreate = () => {
 
     return useMutation<TsSerialCreateResponse, Error>({
         mutationFn: async () => {
-            const response = await axios.post<TsSerialCreateResponse>(`/api/tsSerial`);
+            const response = await axiosInstance.post<TsSerialCreateResponse>(`/api/tsSerial`);
             return response.data;
         },
         onSuccess: () => {
@@ -51,7 +51,7 @@ export const useTsSerialUpdate = (serial: string) => {
 
     return useMutation<TsSerialUpdateResponse, Error, TsSerialUpdateRequest>({
         mutationFn: async (data: TsSerialUpdateRequest) => {
-            const response = await axios.post<TsSerialUpdateResponse>(
+            const response = await axiosInstance.post<TsSerialUpdateResponse>(
                 `/api/tsSerial/${serial}`,
                 data
             );
@@ -70,7 +70,7 @@ export const useTsSerialDelete = (serial: string) => {
 
     return useMutation<TsSerialUpdateResponse, Error>({
         mutationFn: async () => {
-            const response = await axios.delete<TsSerialUpdateResponse>(`/api/tsSerial/${serial}`);
+            const response = await axiosInstance.delete<TsSerialUpdateResponse>(`/api/tsSerial/${serial}`);
             return response.data;
         },
         onSuccess: () => {

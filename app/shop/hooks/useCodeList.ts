@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import { CodeListResponse } from "@/app/shop/types/Code";
 
 export function useCodeList(kind: string, subCode?: string) {
@@ -12,7 +12,7 @@ export function useCodeList(kind: string, subCode?: string) {
       if (subCode) {
         params.SubCode = subCode;
       }
-      const response = await axios.get<CodeListResponse>("/api/code", {
+      const response = await axiosInstance.get<CodeListResponse>("/api/code", {
         params,
       });
       return response.data;

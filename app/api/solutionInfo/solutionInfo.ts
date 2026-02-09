@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import { SolutionInfoListResponse } from "@/app/info/solutionInfo/types/List";
 
 // 솔루션 목록 조회
@@ -8,7 +8,7 @@ export async function getSolutionInfoList(
   pageSize: number
 ): Promise<SolutionInfoListResponse> {
   try {
-    const response = await axios.get<SolutionInfoListResponse>("/api/solutionInfo", {
+    const response = await axiosInstance.get<SolutionInfoListResponse>("/api/solutionInfo", {
       params: {
         keyword: keyword || "",
         pageNumber,

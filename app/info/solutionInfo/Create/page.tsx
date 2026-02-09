@@ -8,7 +8,7 @@ import { useAlert } from "@/public/hooks/useAlert";
 import { parseJWT } from "@/public/utils/utils";
 import { JWTPayload } from "@/public/types/user";
 import { useLoading } from "@/public/contexts/LoadingContext";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 const SOLUTION_OPTIONS = [
   { value: "전체", label: "전체" },
@@ -95,7 +95,7 @@ export default function SolutionInfoCreate() {
         formData.append("xlsFile", xlsFile);
       }
 
-      const response = await axios.post("/api/solutionInfo", formData, {
+      const response = await axiosInstance.post("/api/solutionInfo", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

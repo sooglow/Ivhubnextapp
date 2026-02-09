@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import { EtcSalesListResponse } from "../types/List";
 
 export const useEtcSalesList = (
@@ -17,7 +17,7 @@ export const useEtcSalesList = (
             params.append("pageNumber", pageNumber.toString());
             params.append("pageSize", pageSize.toString());
 
-            const response = await axios.get<EtcSalesListResponse>(
+            const response = await axiosInstance.get<EtcSalesListResponse>(
                 `/api/etcSales?${params.toString()}`
             );
             return response.data;

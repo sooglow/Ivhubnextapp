@@ -30,7 +30,6 @@ export async function GET(request: NextRequest) {
         if (result.success) {
             const items = result.data || [];
 
-            // DB 필드명(소문자 + 언더스코어) → camelCase 변환
             const mappedItems = items.map((item: any) => ({
                 salesSerial: item.sales_serial,
                 callDay: item.callday,

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useInput } from "@/public/hooks/useInput";
 import { useMaintenanceCreate } from "../hooks/useMaintenance";
 import { MAINTENANCESRESULT } from "@/public/constants/etcSales";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 export default function MaintenanceCreate() {
     const router = useRouter();
@@ -73,7 +73,7 @@ export default function MaintenanceCreate() {
     useEffect(() => {
         const fetchMItems = async () => {
             try {
-                const response = await axios.get("/api/code?Kind=mcode");
+                const response = await axiosInstance.get("/api/code?Kind=mcode");
                 if (response.data.result) {
                     setMItems(response.data.data.items || []);
                 }

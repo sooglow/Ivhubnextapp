@@ -124,7 +124,7 @@ export interface ShopViewResponse {
 
 // BasicInfo 컴포넌트 Props
 export interface BasicInfoProps {
-    shop: Shop;
+    shop: CompanyInfo | null;
     shortInfo?: string;
     aiBtnClick?: () => void;
     listClick?: () => void;
@@ -134,8 +134,8 @@ export interface BasicInfoProps {
 
 // KakaoMap 컴포넌트 Props
 export interface KakaoMapProps {
-    lat: string;
-    lon: string;
+    lat: number;
+    lon: number;
 }
 
 // SearchSection 컴포넌트 Props

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import { SalesViewResponse, SalesUpdateResponse, SalesUpdateRequest } from "@/app/sales/types/View";
 
 // Sales View 조회
@@ -7,7 +7,7 @@ export const useSalesView = (salesSerial: string) => {
     return useQuery<SalesViewResponse>({
         queryKey: ["salesView", salesSerial],
         queryFn: async () => {
-            const response = await axios.get<SalesViewResponse>(`/api/sales/${salesSerial}`);
+            const response = await axiosInstance.get<SalesViewResponse>(`/api/sales/${salesSerial}`);
             return response.data;
         },
         enabled: !!salesSerial,
@@ -20,7 +20,7 @@ export const useSalesUpdate = (salesSerial: string) => {
 
     return useMutation<SalesUpdateResponse, Error, SalesUpdateRequest>({
         mutationFn: async (data: SalesUpdateRequest) => {
-            const response = await axios.post<SalesUpdateResponse>(`/api/sales/${salesSerial}`, data);
+            const response = await axiosInstance.post<SalesUpdateResponse>(`/api/sales/${salesSerial}`, data);
             return response.data;
         },
         onSuccess: () => {
@@ -36,7 +36,7 @@ export const useSalesDelete = (salesSerial: string) => {
 
     return useMutation<SalesUpdateResponse, Error, { userId: string; areaCode: string }>({
         mutationFn: async ({ userId, areaCode }) => {
-            const response = await axios.delete<SalesUpdateResponse>(
+            const response = await axiosInstance.delete<SalesUpdateResponse>(
                 `/api/sales/${salesSerial}?userId=${userId}&areaCode=${areaCode}`
             );
             return response.data;

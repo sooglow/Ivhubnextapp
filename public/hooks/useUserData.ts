@@ -2,8 +2,18 @@ import { useLoading } from "@/public/contexts/LoadingContext";
 import { parseJWT } from "@/public/utils/utils";
 import { useEffect, useState } from "react";
 
-export function useUserData() {
-    const [userInfo, setUserInfo] = useState({});
+export interface UserInfo {
+    userId: string;
+    userName: string;
+    areaCode: string;
+    areaName: string;
+    deptCode: string;
+    deptName: string;
+    userPower: string;
+}
+
+export function useUserData(): UserInfo {
+    const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
     const { dispatch } = useLoading();
 
     useEffect(() => {
@@ -14,7 +24,7 @@ export function useUserData() {
                 if (!token) throw new Error("로그인 후 다시 시도해 주세요.");
 
                 const payload = parseJWT(JSON.parse(token).token);
-                setUserInfo(payload);
+                setUserInfo(payload as UserInfo);
             } catch (error) {
                 console.error("Error loading user data:", error);
                 window.location.href = "/login";

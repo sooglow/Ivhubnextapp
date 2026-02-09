@@ -16,7 +16,12 @@ export default function BasicInfo({
 }: BasicInfoProps) {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
 
+  const lat = shop?.lat;
+  const lon = shop?.lon;
+
+
   const startNavigation = () => {
+    if (!lat || !lon) return;
     if (
       window.confirm("카카오네비앱이 설치된 경우 목적지로 설정이 가능합니다. \n계속하시겠습니까?")
     ) {
@@ -25,8 +30,8 @@ export default function BasicInfo({
         // @ts-ignore
         window.Kakao.Navi.start({
           name: shop.comName,
-          x: shop.lon,
-          y: shop.lat,
+          x: lon,
+          y: lat,
           coordType: "wgs84",
         });
       }
@@ -34,12 +39,25 @@ export default function BasicInfo({
   };
 
   const openNaverMap = () => {
-    const appName = "kr.co.intravan.ivhub";
-    const url = `nmap://route/public?slat=&slng=&sname=&dlat=${shop.lat}&dlng=${
-      shop.lon
-    }&dname=${encodeURIComponent(shop.comName)}&appname=${appName}`;
+    if (!lat || !lon) return;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
 
-    window.open(url);
+    if (isMobile) {
+      // 모바일: 네이버 지도 앱 딥링크 (길찾기)
+      const appName = "kr.co.intravan.ivhub";
+      const url = `nmap://route/car?dlat=${lat}&dlng=${lon}&dname=${encodeURIComponent(
+        shop.comName
+      )}&appname=${appName}`;
+      window.open(url);
+    } else {
+      // PC: 네이버 지도 웹 길찾기
+      const url = `https://map.naver.com/v5/directions/-/-/-/car?c=15.00,0,0,0,dh&destination=${encodeURIComponent(
+        shop.comName
+      )},${lon},${lat}`;
+      window.open(url);
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -257,7 +275,7 @@ export default function BasicInfo({
               </div>
             </li>
 
-            {shop?.lat ? (
+            {lat && lon ? (
               <li className="flex text-[14px]">
                 <div className="text-black font-semibold">
                   <label className="font-semibold">업체 목적지 설정</label>
@@ -273,20 +291,20 @@ export default function BasicInfo({
                       className="w-full h-full object-contain"
                     />
                   </button>
+                  
                   <button
                     className="w-[48px] h-[48px] ml-2 rounded-xl bg-[#F2FDFF] shadow-md cursor-pointer"
                     onClick={() =>
                       window.open(
-                        `http://map.naver.com/index.nhn?enc=utf8&level=2&lng=${
-                          shop?.lon ?? ""
-                        }&lat=${shop?.lat ?? ""}&pinTitle=${shop?.comName ?? ""}&pinType=SITE`
+                        `http://map.naver.com/index.nhn?enc=utf8&level=2&lng=${lon}&lat=${lat}&pinTitle=${encodeURIComponent(shop?.comName ?? "")}&pinType=SITE`
                       )
                     }
                   >
                     <img
                       src="/images/button_naver map.jpg"
-                      alt="네이버"
+                      alt="네이버 지도"
                       className="w-full h-full object-contain"
+                      style={{ filter: "grayscale(50%)" }}
                     />
                   </button>
                 </div>
@@ -304,7 +322,7 @@ export default function BasicInfo({
             </li>
 
             <li className="pt-2 pb-8">
-              {shop?.lat && shop?.lon ? <KakaoMap lat={shop.lat} lon={shop.lon} /> : ""}
+              {lat && lon ? <KakaoMap lat={lat} lon={lon} /> : ""}
             </li>
           </ul>
         </div>
@@ -382,7 +400,7 @@ export default function BasicInfo({
             <div className="text-black font-semibold">담당자2 H·P</div>
             <div>{shop?.hp04 ? shop?.hp04 : "-"}</div>
           </li>
-          {shop?.lat ? (
+          {lat && lon ? (
             <li className="pt-4 flex justify-between text-[14px] pb-4">
               <div className="text-black font-semibold">
                 <label className="font-semibold">업체 목적지 설정</label>
@@ -404,8 +422,23 @@ export default function BasicInfo({
                 >
                   <img
                     src="/images/button_naver map.jpg"
-                    alt="네이버"
+                    alt="네이버 길찾기"
                     className="w-full h-full object-contain"
+                  />
+                </button>
+                <button
+                  className="w-[48px] h-[48px] ml-2 rounded-xl bg-[#F2FDFF] shadow-md cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `http://map.naver.com/index.nhn?enc=utf8&level=2&lng=${lon}&lat=${lat}&pinTitle=${encodeURIComponent(shop?.comName ?? "")}&pinType=SITE`
+                    )
+                  }
+                >
+                  <img
+                    src="/images/button_naver map.jpg"
+                    alt="네이버 지도"
+                    className="w-full h-full object-contain"
+                    style={{ filter: "grayscale(50%)" }}
                   />
                 </button>
               </div>

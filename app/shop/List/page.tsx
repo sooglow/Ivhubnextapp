@@ -18,6 +18,7 @@ import {
 } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 export default function ShopList(): React.ReactElement {
     const PAGE_SIZE = 10;
@@ -49,7 +50,7 @@ export default function ShopList(): React.ReactElement {
         currentPage,
         PAGE_SIZE,
         prgCode,
-        areaCode
+        areaCode,
     );
 
     // 데이터 추출
@@ -158,8 +159,32 @@ export default function ShopList(): React.ReactElement {
                 handleSearch();
             }
         },
-        [handleSearch]
+        [handleSearch],
     );
+
+    // 엑셀 내보내기
+    const handleExportExcel = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/Company/ExportXls?PrgCode=${prgCode}&AreaCode=${areaCode}&Keyword=${keywordInput.value}`,
+                {
+                    responseType: "blob",
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "CompanyList.zip");
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("엑셀 내보내기 오류:", error);
+            alert("엑셀 내보내기에 실패했습니다.");
+        }
+    }, [prgCode, areaCode, keywordInput.value]);
 
     useEffect(() => {
         const checkMobile = () => {
@@ -195,6 +220,16 @@ export default function ShopList(): React.ReactElement {
                         showAreaFilter={isAdmin}
                     />
 
+                    {/* 엑셀 내보내기 버튼 */}
+                    <div className="flex justify-start mt-2 md:mt-4 px-4 md:px-0 md:pl-4">
+                        <button
+                            onClick={handleExportExcel}
+                            className="w-[115px] h-10 bg-[#77829B] text-[#FFFFFF] rounded-[5px] text-[14px] md:w-[115px] md:h-10 cursor-pointer"
+                        >
+                            엑셀 내보내기
+                        </button>
+                    </div>
+
                     <div className="mt-2 md:mt-4">
                         {/* 데스크탑 테이블 */}
                         <div className="hidden md:block">
@@ -215,21 +250,21 @@ export default function ShopList(): React.ReactElement {
                                                                 header.id === "comCode"
                                                                     ? "13%"
                                                                     : header.id === "area"
-                                                                    ? "14%"
-                                                                    : header.id === "comName"
-                                                                    ? "20%"
-                                                                    : header.id === "boss"
-                                                                    ? "13%"
-                                                                    : header.id === "idno"
-                                                                    ? "15%"
-                                                                    : header.id === "hp"
-                                                                    ? "15%"
-                                                                    : "10%",
+                                                                      ? "14%"
+                                                                      : header.id === "comName"
+                                                                        ? "20%"
+                                                                        : header.id === "boss"
+                                                                          ? "13%"
+                                                                          : header.id === "idno"
+                                                                            ? "15%"
+                                                                            : header.id === "hp"
+                                                                              ? "15%"
+                                                                              : "10%",
                                                         }}
                                                     >
                                                         {flexRender(
                                                             header.column.columnDef.header,
-                                                            header.getContext()
+                                                            header.getContext(),
                                                         )}
                                                     </th>
                                                 ))}
@@ -249,7 +284,7 @@ export default function ShopList(): React.ReactElement {
                                                     key={row.id}
                                                     onClick={() => {
                                                         router.push(
-                                                            `/shop/View/${row.original.comCode}`
+                                                            `/shop/View/${row.original.comCode}`,
                                                         );
                                                     }}
                                                     className="hover:bg-slate-100 cursor-pointer transition-all"
@@ -261,7 +296,7 @@ export default function ShopList(): React.ReactElement {
                                                         >
                                                             {flexRender(
                                                                 cell.column.columnDef.cell,
-                                                                cell.getContext()
+                                                                cell.getContext(),
                                                             )}
                                                         </td>
                                                     ))}
@@ -339,7 +374,7 @@ export default function ShopList(): React.ReactElement {
                             totalPages={totalPages}
                             onPageChange={useCallback(
                                 (pageIndex: number) => setCurrentPage(pageIndex + 1),
-                                []
+                                [],
                             )}
                             canPreviousPage={table.getCanPreviousPage()}
                             canNextPage={table.getCanNextPage()}

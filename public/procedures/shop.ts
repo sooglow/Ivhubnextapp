@@ -1,10 +1,6 @@
 import { ShopItem } from "@/app/shop/types/List";
 import {
-    CompanyInfo,
-    SalesItem,
-    AsHistItem,
-    UsedPrgItem,
-    ShopViewDetail,
+  ShopViewDetail
 } from "@/app/shop/types/View";
 import { BaseProcedures, ProcedureResult } from "./index";
 

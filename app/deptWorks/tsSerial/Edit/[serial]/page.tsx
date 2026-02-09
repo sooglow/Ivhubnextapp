@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useInput } from "@/public/hooks/useInput";
 import { useTsSerialView, useTsSerialUpdate } from "../../hooks/useTsSerial";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 interface TsSerialEditProps {
     params: Promise<{ serial: string }>;
@@ -73,7 +73,7 @@ export default function TsSerialEdit({ params }: TsSerialEditProps) {
     useEffect(() => {
         const fetchAreaItems = async () => {
             try {
-                const response = await axios.get("/api/code?Kind=areacode");
+                const response = await axiosInstance.get("/api/code?Kind=areacode");
                 if (response.data.result) {
                     setAreaItems(response.data.data.items || []);
                 }
@@ -89,7 +89,7 @@ export default function TsSerialEdit({ params }: TsSerialEditProps) {
     useEffect(() => {
         const fetchManItems = async () => {
             try {
-                const response = await axios.get(`/api/code?Kind=mancode&SubCode=${areaCode}`);
+                const response = await axiosInstance.get(`/api/code?Kind=mancode&SubCode=${areaCode}`);
                 if (response.data.result) {
                     setManItems(response.data.data.items || []);
                 }

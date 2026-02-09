@@ -18,7 +18,7 @@ import ListItemLoader from "../components/ListItemLoader";
 import MobileListItemLoader from "../components/MobileListItemLoader";
 import SearchSection from "../components/SearchSection";
 import { MaintenanceListItem } from "../types/List";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 
 export default function MaintenanceList() {
     const router = useRouter();
@@ -194,7 +194,7 @@ export default function MaintenanceList() {
     useEffect(() => {
         const fetchMItems = async () => {
             try {
-                const response = await axios.get("/api/code?Kind=mcode");
+                const response = await axiosInstance.get("/api/code?Kind=mcode");
                 if (response.data.result) {
                     setMItems(response.data.data.items || []);
                 }

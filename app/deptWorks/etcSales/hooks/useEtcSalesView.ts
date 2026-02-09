@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import { EtcSalesViewResponse, EtcSalesUpdateRequest, EtcSalesUpdateResponse } from "../types/Edit";
 
 export const useEtcSalesView = (serial: string) => {
     return useQuery<EtcSalesViewResponse>({
         queryKey: ["etcSalesView", serial],
         queryFn: async () => {
-            const response = await axios.get<EtcSalesViewResponse>(`/api/etcSales/${serial}`);
+            const response = await axiosInstance.get<EtcSalesViewResponse>(`/api/etcSales/${serial}`);
             return response.data;
         },
         enabled: !!serial,
@@ -18,7 +18,7 @@ export const useEtcSalesUpdate = (serial: string) => {
 
     return useMutation<EtcSalesUpdateResponse, Error, EtcSalesUpdateRequest>({
         mutationFn: async (data: EtcSalesUpdateRequest) => {
-            const response = await axios.post<EtcSalesUpdateResponse>(
+            const response = await axiosInstance.post<EtcSalesUpdateResponse>(
                 `/api/etcSales/${serial}`,
                 data
             );
@@ -36,7 +36,7 @@ export const useEtcSalesDelete = (serial: string) => {
 
     return useMutation<EtcSalesUpdateResponse, Error>({
         mutationFn: async () => {
-            const response = await axios.delete<EtcSalesUpdateResponse>(`/api/etcSales/${serial}`);
+            const response = await axiosInstance.delete<EtcSalesUpdateResponse>(`/api/etcSales/${serial}`);
             return response.data;
         },
         onSuccess: () => {
@@ -50,7 +50,7 @@ export const useEtcSalesCreate = () => {
 
     return useMutation<EtcSalesUpdateResponse, Error, EtcSalesUpdateRequest>({
         mutationFn: async (data: EtcSalesUpdateRequest) => {
-            const response = await axios.post<EtcSalesUpdateResponse>(`/api/etcSales`, data);
+            const response = await axiosInstance.post<EtcSalesUpdateResponse>(`/api/etcSales`, data);
             return response.data;
         },
         onSuccess: () => {

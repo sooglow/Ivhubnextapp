@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/public/lib/axiosInstance";
 import {
     MaintenanceListResponse,
     MaintenanceViewResponse,
@@ -12,7 +12,7 @@ export const useMaintenanceList = (comCode: string = "", keyword: string = "", p
     return useQuery<MaintenanceListResponse>({
         queryKey: ["maintenanceList", comCode, keyword, pageNumber, pageSize],
         queryFn: async () => {
-            const response = await axios.get<MaintenanceListResponse>(
+            const response = await axiosInstance.get<MaintenanceListResponse>(
                 `/api/maintenance?comCode=${comCode}&keyword=${keyword}&pageNumber=${pageNumber}&pageSize=${pageSize}`
             );
             return response.data;
@@ -25,7 +25,7 @@ export const useMaintenanceView = (serial: string) => {
     return useQuery<MaintenanceViewResponse>({
         queryKey: ["maintenanceView", serial],
         queryFn: async () => {
-            const response = await axios.get<MaintenanceViewResponse>(`/api/maintenance/${serial}`);
+            const response = await axiosInstance.get<MaintenanceViewResponse>(`/api/maintenance/${serial}`);
             return response.data;
         },
         enabled: !!serial,
@@ -38,7 +38,7 @@ export const useMaintenanceCreate = () => {
 
     return useMutation<MaintenanceUpdateResponse, Error, MaintenanceUpdateRequest>({
         mutationFn: async (data: MaintenanceUpdateRequest) => {
-            const response = await axios.post<MaintenanceUpdateResponse>(`/api/maintenance`, data);
+            const response = await axiosInstance.post<MaintenanceUpdateResponse>(`/api/maintenance`, data);
             return response.data;
         },
         onSuccess: () => {
@@ -53,7 +53,7 @@ export const useMaintenanceUpdate = (serial: string) => {
 
     return useMutation<MaintenanceUpdateResponse, Error, MaintenanceUpdateRequest>({
         mutationFn: async (data: MaintenanceUpdateRequest) => {
-            const response = await axios.post<MaintenanceUpdateResponse>(
+            const response = await axiosInstance.post<MaintenanceUpdateResponse>(
                 `/api/maintenance/${serial}`,
                 data
             );
@@ -72,7 +72,7 @@ export const useMaintenanceDelete = (serial: string) => {
 
     return useMutation<MaintenanceUpdateResponse, Error>({
         mutationFn: async () => {
-            const response = await axios.delete<MaintenanceUpdateResponse>(`/api/maintenance/${serial}`);
+            const response = await axiosInstance.delete<MaintenanceUpdateResponse>(`/api/maintenance/${serial}`);
             return response.data;
         },
         onSuccess: () => {
